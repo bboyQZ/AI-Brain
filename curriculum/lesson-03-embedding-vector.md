@@ -1,6 +1,6 @@
-# Day 3：什么是 Embedding 向量？
+# Lesson 3：什么是 Embedding 向量？
 
-## 今日目标
+## 本课目标
 
 理解：
 
@@ -36,7 +36,7 @@ Embedding
 Transformer
 ```
 
-Day 1 学了 Tokenizer，Day 2 学了 Embedding 的作用；今天深入理解 **向量本身** 是什么。
+Lesson 1 学了 Tokenizer，Lesson 2 学了 Embedding 的作用；本课深入理解 **向量本身** 是什么。
 
 ---
 
@@ -187,7 +187,7 @@ RAG **不会直接搜索文字**，而是搜索向量：
 ```powershell
 Set-Location "D:\develop\AI-Brain"
 pip install -r ".\requirements.txt"
-python ".\examples\day03_embedding_vector.py"
+python ".\examples\lesson03_embedding_vector.py"
 ```
 
 脚本会演示：
@@ -199,7 +199,7 @@ python ".\examples\day03_embedding_vector.py"
 
 ---
 
-## 今日总结
+## 本课总结
 
 | 组件 | 职责 |
 |------|------|
@@ -211,7 +211,7 @@ python ".\examples\day03_embedding_vector.py"
 
 ---
 
-## 今日关键词
+## 本课关键词
 
 - Token、Token ID、Tokenizer
 - Embedding、Vector（向量）

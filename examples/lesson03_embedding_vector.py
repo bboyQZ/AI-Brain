@@ -1,10 +1,10 @@
 r"""
-Day 3 动手练习：理解向量的含义、聚类与 RAG 检索。
+Lesson 3 动手练习：理解向量的含义、聚类与 RAG 检索。
 
 推荐运行（PowerShell）：
     Set-Location "D:\develop\AI-Brain"
     pip install -r ".\requirements.txt"
-    python ".\examples\day03_embedding_vector.py"
+    python ".\examples\lesson03_embedding_vector.py"
 """
 
 import numpy as np
@@ -65,15 +65,6 @@ def show_clusters() -> None:
         print(f"{a} ↔ {b:<10} {score:>10.4f}")
 
 
-def rag_retrieve(query_vec: np.ndarray, top_k: int = 1) -> list[tuple[str, float]]:
-    scores = [
-        (doc, cosine_similarity(query_vec, vec))
-        for doc, vec in KNOWLEDGE_BASE.items()
-    ]
-    scores.sort(key=lambda x: x[1], reverse=True)
-    return scores[:top_k]
-
-
 def show_rag_demo() -> None:
     print("\n【3】模拟 RAG：用向量距离检索知识库")
     query_vec = np.array([0.78, 0.72, 0.12])  # 与「自动分配失败」语义相近
@@ -93,7 +84,7 @@ def show_rag_demo() -> None:
 
 
 def main() -> None:
-    print("Day 3 — 什么是 Embedding 向量？")
+    print("Lesson 3 — 什么是 Embedding 向量？")
     show_basic_vectors()
     show_clusters()
     show_rag_demo()

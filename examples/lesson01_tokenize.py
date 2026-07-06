@@ -1,10 +1,10 @@
 r"""
-Day 1 动手练习：观察文本如何被切成 Token。
+Lesson 1 动手练习：观察文本如何被切成 Token。
 
 推荐运行（PowerShell）：
     Set-Location "D:\develop\AI-Brain"
     pip install -r ".\requirements.txt"
-    python ".\examples\day01_tokenize.py"
+    python ".\examples\lesson01_tokenize.py"
 """
 
 import tiktoken
@@ -24,7 +24,7 @@ def inspect(text: str, encoding_name: str = "cl100k_base") -> None:
 
 
 def main() -> None:
-    print("Day 1 — Token 与 Tokenizer 演示")
+    print("Lesson 1 — Token 与 Tokenizer 演示")
     print("编码: cl100k_base（GPT-4 / GPT-3.5-turbo 常用）")
 
     samples = [

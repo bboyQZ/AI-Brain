@@ -1,6 +1,6 @@
-# Day 2：Embedding（嵌入）
+# Lesson 2：Embedding（嵌入）
 
-## 今日目标
+## 本课目标
 
 理解 **Embedding** 如何把「无意义的编号」变成「能表达语义的向量」，以及它在 RAG 里的作用。
 
@@ -30,7 +30,7 @@ Embedding
 Transformer
 ```
 
-Day 1 我们停在 **Token ID**；今天补上中间这一步——模型真正做推理时，操作的是向量，而不是编号本身。
+Lesson 1 我们停在 **Token ID**；本课补上中间这一步——模型真正做推理时，操作的是向量，而不是编号本身。
 
 ---
 
@@ -54,7 +54,44 @@ Token ID 14002  →  [0.12, -0.34, 0.56, ...]   （768 维向量）
 Token ID 987    →  [0.11, -0.31, 0.52, ...]   （方向相近）
 ```
 
-这些向量是模型在预训练过程中**学出来**的，存在一张巨大的「Embedding 查找表」里。
+这些向量是模型在预训练过程中**学出来**的，存在一张巨大的「Embedding 查找表」里（下一节展开）。
+
+---
+
+## Embedding 是如何实现的？
+
+Embedding 本质上不是实时计算，而是**查表（Lookup）**。
+
+模型内部保存着一个可训练的 **Embedding Matrix（嵌入矩阵）**——可以把它想象成一张表：每一行对应一个 Token ID，每一列是向量中的一个维度。
+
+例如（3 维示意）：
+
+| Token ID | Embedding |
+|----------|-----------|
+| 0 | (0.1, 0.5, -0.3) |
+| 1 | (0.8, -1.2, 0.4) |
+| 2 | (0.7, -1.1, 0.5) |
+
+流程很简单：
+
+```
+Tokenizer 输出 Token ID  →  用 ID 作为行号查表  →  取出该行的向量
+```
+
+训练开始时，矩阵里的向量都是**随机初始化**的。
+
+随着模型不断训练，通过**反向传播**不断更新这些向量，使语义相近的 Token 在向量空间中逐渐靠近。
+
+因此：
+
+- **Embedding Matrix 是模型参数的一部分**（和 Attention 权重一样，都是「学」出来的）
+- **Embedding 是训练出来的，不是人工设计出来的**
+- **推理阶段的 Embedding 本质上就是一次查表操作**（极快，不涉及复杂计算）
+
+```
+训练：随机矩阵 → 反向传播 → 语义相近的 Token 向量逐渐靠近
+推理：Token ID → 查表 → 向量 → 送入 Transformer
+```
 
 ---
 
@@ -124,24 +161,25 @@ RAG 检索的核心就是 Embedding + 向量距离：
 ```powershell
 Set-Location "D:\develop\AI-Brain"
 pip install -r ".\requirements.txt"
-python ".\examples\day02_embedding.py"
+python ".\examples\lesson02_embedding.py"
 ```
 
 脚本会：
 
-1. 对比 Token ID（无语义）与 Embedding 向量（有语义）
-2. 用玩具向量计算「北京 / 上海 / 香蕉」之间的余弦相似度
+1. 演示 Embedding Matrix 查表（Lookup）
+2. 对比 Token ID（无语义）与 Embedding 向量（有语义）
+3. 用玩具向量计算「北京 / 上海 / 香蕉」之间的余弦相似度
 
 > 真实生产环境使用 `text-embedding-3-small`、`bge-m3` 等模型生成 768+ 维向量；本练习侧重理解概念，无需下载大模型。
 
 ---
 
-## 今日总结
+## 本课总结
 
 | 组件 | 职责 |
 |------|------|
 | **Tokenizer** | 把文本转换为 Token ID |
-| **Embedding** | 把 Token ID（或整段文本）转换为能表达语义的向量 |
+| **Embedding** | 把 Token ID（或整段文本）转换为能表达语义的向量；LLM 内部通过 Embedding Matrix 查表实现 |
 | **Transformer** | 在这些向量上进行计算和推理 |
 
 理解 Embedding，是理解 **RAG、向量数据库和现代 AI 搜索系统** 的基础。

@@ -1,6 +1,6 @@
-# Day 1：Token 与 Tokenizer
+# Lesson 1：Token 与 Tokenizer
 
-## 今日目标
+## 本课目标
 
 理解 LLM 为什么不是处理「文字」，而是处理 **Token**。
 
@@ -85,18 +85,18 @@ Context Window 的单位也是 Token，不是字符。例如「128K 上下文」
 ```powershell
 Set-Location "D:\develop\AI-Brain"
 pip install -r ".\requirements.txt"
-python ".\examples\day01_tokenize.py"
+python ".\examples\lesson01_tokenize.py"
 ```
 
 观察同一段中英文、代码、标点，Token 数量有何不同。
 
 ---
 
-## 今日总结
+## 本课总结
 
 > LLM 真正处理的是 **Token**，而 Token 是由 **Tokenizer** 决定的。
 
-因此理解 Token 是学习 **Prompt、RAG、Agent 和上下文管理** 的基础。后续每一天都会在这个认知上继续搭建。
+因此理解 Token 是学习 **Prompt、RAG、Agent 和上下文管理** 的基础。后续每一课都会在这个认知上继续搭建。
 
 ---
 
