@@ -37,7 +37,19 @@ python ".\examples\lesson06_rag_intro.py"
 
 ```
 AI-Brain/
+├── app/            # 后端（FastAPI）
 ├── curriculum/     # 课程文档
 ├── examples/       # 配套动手示例
+├── tests/          # 后端测试
 └── requirements.txt
 ```
+
+## 后端开发
+
+```powershell
+Set-Location "D:\develop\AI-Brain"
+pip install -r ".\requirements.txt"
+uvicorn app.main:app --reload
+```
+
+启动后访问 `http://127.0.0.1:8000/docs` 查看 API 文档。

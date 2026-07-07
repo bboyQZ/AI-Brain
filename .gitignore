@@ -219,3 +219,7 @@ __marimo__/
 
 # AI-Brain runtime data (SQLite DB, caches, etc.)
 /data/
+__pycache__/
+*.pyc
+.pytest_cache/
+models_cache/
