@@ -65,3 +65,31 @@ class AttentionResponse(BaseModel):
     num_heads: int
     layers: list[AttentionLayer]
     model: str
+
+
+class SessionCreate(BaseModel):
+    title: str = "新对话"
+
+
+class SessionInfo(BaseModel):
+    id: int
+    title: str
+    created_at: str
+
+
+class MessageCreate(BaseModel):
+    role: str  # "user" | "assistant"
+    content: str
+
+
+class MessageInfo(BaseModel):
+    id: int
+    session_id: int
+    role: str
+    content: str
+    created_at: str
+
+
+class SessionHistory(BaseModel):
+    session: SessionInfo
+    messages: list[MessageInfo]

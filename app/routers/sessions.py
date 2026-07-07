@@ -1,0 +1,35 @@
+# app/routers/sessions.py
+from fastapi import APIRouter, HTTPException
+
+from app.models.schemas import (
+    SessionCreate, SessionInfo, MessageCreate, MessageInfo, SessionHistory,
+)
+from app.services.session_store import (
+    create_session, add_message, get_history, list_sessions,
+)
+
+router = APIRouter(prefix="/sessions", tags=["sessions"])
+
+
+@router.post("", response_model=SessionInfo)
+def create(req: SessionCreate) -> SessionInfo:
+    return create_session(req.title)
+
+
+@router.get("", response_model=list[SessionInfo])
+def list_all() -> list[SessionInfo]:
+    return list_sessions()
+
+
+@router.post("/{session_id}/messages", response_model=MessageInfo)
+def add_msg(session_id: int, req: MessageCreate) -> MessageInfo:
+    return add_message(session_id, req.role, req.content)
+
+
+@router.get("/{session_id}", response_model=SessionHistory)
+def history(session_id: int) -> SessionHistory:
+    sessions = {s.id: s for s in list_sessions()}
+    if session_id not in sessions:
+        raise HTTPException(status_code=404, detail="session not found")
+    msgs = get_history(session_id)
+    return SessionHistory(session=sessions[session_id], messages=msgs)
