@@ -47,3 +47,21 @@ class SimilarityPair(BaseModel):
 class SimilarityResponse(BaseModel):
     pairs: list[SimilarityPair]
     model: str
+
+
+class AttentionRequest(BaseModel):
+    text: str
+
+
+class AttentionLayer(BaseModel):
+    layer: int
+    heads: list[list[list[float]]]  # [head][query_token][key_token]
+
+
+class AttentionResponse(BaseModel):
+    text: str
+    tokens: list[str]
+    num_layers: int
+    num_heads: int
+    layers: list[AttentionLayer]
+    model: str
