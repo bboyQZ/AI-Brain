@@ -10,5 +10,6 @@ export function renderMarkdown(text: string): string {
     .replace(/^## (.+)$/gm, "<h3>$1</h3>")
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\[引自[：:]\s*([^\]]+)\]/g, '<span class="source-tag">引自: $1</span>')
     .replace(/\n/g, "<br>");
 }

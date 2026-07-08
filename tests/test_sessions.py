@@ -46,3 +46,49 @@ def test_list_sessions(client):
 def test_history_not_found(client):
     resp = client.get("/sessions/99999")
     assert resp.status_code == 404
+
+
+def _derive_title_for_test(content: str, limit: int = 20) -> str:
+    normalized = " ".join(content.split())
+    default = "新对话"
+    if not normalized:
+        return default
+    if len(normalized) <= limit:
+        return normalized
+    return normalized[:limit].rstrip() + "..."
+
+
+def test_first_user_message_auto_titles_new_session(client):
+    session = client.post("/sessions", json={"title": "新对话"}).json()
+    sid = session["id"]
+
+    content = "什么是 Transformer 的残差连接以及它为什么能缓解梯度消失问题"
+    client.post(f"/sessions/{sid}/messages", json={"role": "user", "content": content})
+
+    listed = client.get("/sessions").json()
+    current = next(item for item in listed if item["id"] == sid)
+    assert current["title"] == _derive_title_for_test(content)
+
+
+def test_patch_session_title(client):
+    session = client.post("/sessions", json={"title": "旧标题"}).json()
+    sid = session["id"]
+
+    resp = client.patch(f"/sessions/{sid}", json={"title": "新标题"})
+    assert resp.status_code == 200
+    assert resp.json()["title"] == "新标题"
+
+
+def test_delete_session_removes_messages_and_session(client):
+    session = client.post("/sessions", json={"title": "待删除"}).json()
+    sid = session["id"]
+    client.post(f"/sessions/{sid}/messages", json={"role": "user", "content": "hello"})
+
+    resp = client.delete(f"/sessions/{sid}")
+    assert resp.status_code == 204
+
+    history = client.get(f"/sessions/{sid}")
+    assert history.status_code == 404
+
+    listed = client.get("/sessions").json()
+    assert all(item["id"] != sid for item in listed)

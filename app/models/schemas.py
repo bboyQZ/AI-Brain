@@ -71,6 +71,10 @@ class SessionCreate(BaseModel):
     title: str = "新对话"
 
 
+class SessionUpdate(BaseModel):
+    title: str
+
+
 class SessionInfo(BaseModel):
     id: int
     title: str

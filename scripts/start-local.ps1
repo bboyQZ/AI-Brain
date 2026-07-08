@@ -27,8 +27,11 @@ Start-Process powershell -ArgumentList @(
     "Set-Location '$Root\frontend'; Write-Host 'AI-Brain 前端' -ForegroundColor Green; if (-not (Test-Path node_modules)) { npm install }; npm run dev"
 )
 
+Start-Sleep -Seconds 3
+Start-Process "http://localhost:5173"
+
 Write-Host ""
-Write-Host "已打开两个窗口。" -ForegroundColor Green
+Write-Host "已打开两个服务窗口，并在浏览器中打开前端。" -ForegroundColor Green
 Write-Host "  前端: http://localhost:5173"
 Write-Host "  后端: http://127.0.0.1:8000/docs"
 Write-Host ""

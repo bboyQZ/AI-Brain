@@ -153,6 +153,21 @@ export const api = {
     return res.json();
   },
 
+  async updateSessionTitle(id: number, title: string): Promise<SessionInfo> {
+    const res = await fetch(`${BASE}/sessions/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json() as Promise<SessionInfo>;
+  },
+
+  async deleteSession(id: number): Promise<void> {
+    const res = await fetch(`${BASE}/sessions/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(await res.text());
+  },
+
   chat(sessionId: number, query: string): Promise<Response> {
     return fetch(`${BASE}/chat`, {
       method: "POST",

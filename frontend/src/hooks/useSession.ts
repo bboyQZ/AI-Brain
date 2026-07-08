@@ -39,6 +39,34 @@ export function useSession() {
     localStorage.setItem(SESSION_KEY, String(id));
   }, []);
 
+  const refreshSessions = useCallback(async () => {
+    const list = await api.listSessions();
+    setSessions(list);
+    return list;
+  }, []);
+
+  const removeSession = useCallback(async (id: number) => {
+    await api.deleteSession(id);
+
+    const list = await api.listSessions();
+    if (list.length === 0) {
+      const s = await api.createSession("新对话");
+      setSessions([s]);
+      setCurrentId(s.id);
+      localStorage.setItem(SESSION_KEY, String(s.id));
+      setMessages([]);
+      return;
+    }
+
+    setSessions(list);
+    if (currentId === id) {
+      const next = list[0];
+      setCurrentId(next.id);
+      localStorage.setItem(SESSION_KEY, String(next.id));
+      setMessages([]);
+    }
+  }, [currentId]);
+
   useEffect(() => {
     if (!currentId) {
       setMessages([]);
@@ -61,13 +89,17 @@ export function useSession() {
   }, [currentId]);
 
   const createNew = useCallback(async () => {
+    if (currentId && messages.length === 0 && !loading) {
+      const current = sessions.find((s) => s.id === currentId);
+      if (current) return current;
+    }
     const s = await api.createSession("新对话");
     setSessions((prev) => [s, ...prev]);
     setCurrentId(s.id);
     localStorage.setItem(SESSION_KEY, String(s.id));
     setMessages([]);
     return s;
-  }, []);
+  }, [currentId, messages.length, loading, sessions]);
 
   const appendMessage = useCallback((msg: MessageInfo) => {
     setMessages((prev) => [...prev, msg]);
@@ -85,6 +117,7 @@ export function useSession() {
 
   return {
     sessions, currentId, messages, loading,
-    loadSessions, switchTo, createNew, appendMessage, appendStreaming,
+    loadSessions, switchTo, createNew, refreshSessions, removeSession,
+    appendMessage, appendStreaming,
   };
 }

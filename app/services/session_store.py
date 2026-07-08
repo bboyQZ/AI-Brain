@@ -3,6 +3,18 @@ from app.db import get_conn
 from app.models.schemas import SessionInfo, MessageInfo
 
 
+DEFAULT_SESSION_TITLE = "新对话"
+
+
+def _derive_session_title(content: str, limit: int = 20) -> str:
+    normalized = " ".join(content.split())
+    if not normalized:
+        return DEFAULT_SESSION_TITLE
+    if len(normalized) <= limit:
+        return normalized
+    return normalized[:limit].rstrip() + "..."
+
+
 def create_session(title: str) -> SessionInfo:
     conn = get_conn()
     cur = conn.execute("INSERT INTO sessions(title) VALUES (?)", (title,))
@@ -15,11 +27,27 @@ def create_session(title: str) -> SessionInfo:
 
 def add_message(session_id: int, role: str, content: str) -> MessageInfo:
     conn = get_conn()
+
+    should_auto_title = False
+    if role == "user":
+        sess = conn.execute("SELECT title FROM sessions WHERE id=?", (session_id,)).fetchone()
+        if sess and sess["title"] == DEFAULT_SESSION_TITLE:
+            user_count = conn.execute(
+                "SELECT COUNT(*) as c FROM messages WHERE session_id=? AND role='user'",
+                (session_id,),
+            ).fetchone()["c"]
+            should_auto_title = user_count == 0
+
     cur = conn.execute(
         "INSERT INTO messages(session_id, role, content) VALUES (?, ?, ?)",
         (session_id, role, content),
     )
     mid = cur.lastrowid
+
+    if should_auto_title:
+        new_title = _derive_session_title(content)
+        conn.execute("UPDATE sessions SET title=? WHERE id=?", (new_title, session_id))
+
     conn.commit()
     row = conn.execute("SELECT * FROM messages WHERE id=?", (mid,)).fetchone()
     conn.close()
@@ -27,6 +55,27 @@ def add_message(session_id: int, role: str, content: str) -> MessageInfo:
         id=row["id"], session_id=row["session_id"],
         role=row["role"], content=row["content"], created_at=row["created_at"],
     )
+
+
+def update_session_title(session_id: int, title: str) -> SessionInfo | None:
+    conn = get_conn()
+    conn.execute("UPDATE sessions SET title=? WHERE id=?", (title, session_id))
+    conn.commit()
+    row = conn.execute("SELECT * FROM sessions WHERE id=?", (session_id,)).fetchone()
+    conn.close()
+    if not row:
+        return None
+    return SessionInfo(id=row["id"], title=row["title"], created_at=row["created_at"])
+
+
+def delete_session(session_id: int) -> bool:
+    conn = get_conn()
+    conn.execute("DELETE FROM messages WHERE session_id=?", (session_id,))
+    cur = conn.execute("DELETE FROM sessions WHERE id=?", (session_id,))
+    conn.commit()
+    ok = cur.rowcount > 0
+    conn.close()
+    return ok
 
 
 def get_history(session_id: int) -> list[MessageInfo]:

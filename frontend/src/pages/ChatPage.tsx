@@ -10,9 +10,15 @@ import "./ChatPage.css";
 export default function ChatPage() {
   const {
     sessions, currentId, messages, loading,
-    switchTo, createNew, appendMessage, appendStreaming,
+    switchTo, createNew, refreshSessions, removeSession, appendMessage, appendStreaming,
   } = useSession();
   const [sending, setSending] = useState(false);
+
+  const examplePrompts = [
+    "什么是 Token？",
+    "RAG 是怎么工作的？",
+    "帮我解释 Attention。",
+  ];
 
   const handleSend = useCallback(async (text: string) => {
     let sessionId = currentId;
@@ -32,6 +38,8 @@ export default function ChatPage() {
     setSending(true);
     const userMsg = await api.addMessage(sessionId, "user", text);
     appendMessage(userMsg);
+    // 首条用户消息会触发后端自动改标题；这里刷新会话列表以同步侧边栏显示
+    await refreshSessions();
     appendStreaming("assistant", "");
 
     let assistantContent = "";
@@ -50,7 +58,7 @@ export default function ChatPage() {
         setSending(false);
       },
     );
-  }, [currentId, createNew, appendMessage, appendStreaming]);
+  }, [currentId, createNew, refreshSessions, appendMessage, appendStreaming]);
 
   return (
     <div className="chat-page">
@@ -59,10 +67,19 @@ export default function ChatPage() {
         currentId={currentId}
         onSwitch={switchTo}
         onCreate={createNew}
+        onDelete={removeSession}
       />
       <div className="chat-main">
-        <MessageList messages={messages} loading={loading} streaming={sending} />
-        <MessageInput onSend={handleSend} disabled={sending} />
+        <div className="chat-main-inner">
+          <MessageList
+            messages={messages}
+            loading={loading}
+            streaming={sending}
+            examplePrompts={examplePrompts}
+            onSelectPrompt={handleSend}
+          />
+          <MessageInput onSend={handleSend} disabled={sending} />
+        </div>
       </div>
     </div>
   );
