@@ -1,0 +1,42 @@
+# app/main.py
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.config import CORS_ORIGINS
+from app.db import init_db
+from app.routers import tokenize, embed, attention, sessions, chat, ingest
+from app.services.retriever import build_bm25_from_store
+from app.services.vector_store import count
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    if count() > 0:
+        build_bm25_from_store()
+    yield
+
+
+app = FastAPI(title="AI-Brain Chat", version="0.1.0", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(tokenize.router)
+app.include_router(embed.router)
+app.include_router(attention.router)
+app.include_router(sessions.router)
+app.include_router(chat.router)
+app.include_router(ingest.router)
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
