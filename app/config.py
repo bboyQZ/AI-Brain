@@ -28,4 +28,11 @@ ZHIPU_API_KEY = os.getenv("ZHIPU_API_KEY", "")
 ZHIPU_BASE_URL = "https://open.bigmodel.cn/api/paas/v4"
 ZHIPU_MODEL = "glm-4"
 
+# 逗号分隔，例：http://localhost:5173,https://xxx.vercel.app
+CORS_ORIGINS = [
+    o.strip()
+    for o in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
+    if o.strip()
+]
+
 DATA_DIR.mkdir(parents=True, exist_ok=True)

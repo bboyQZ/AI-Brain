@@ -1,0 +1,16 @@
+.git
+.github
+frontend
+data
+.env
+.env.*
+!.env.example
+__pycache__
+*.pyc
+.pytest_cache
+models_cache
+docs
+examples
+tests
+README.md
+.cursor
