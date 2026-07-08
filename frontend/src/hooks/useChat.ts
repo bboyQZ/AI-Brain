@@ -14,7 +14,7 @@ export async function streamChat(
       return;
     }
     const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
+    const decoder = new TextDecoder("utf-8");
     let buffer = "";
     while (true) {
       const { done, value } = await reader.read();

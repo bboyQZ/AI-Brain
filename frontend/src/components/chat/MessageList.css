@@ -97,6 +97,26 @@
   border: 1px solid var(--border);
 }
 
+.message-content.markdown strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.message-content.markdown code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(124, 108, 255, 0.15);
+}
+
+.message-content.markdown h3,
+.message-content.markdown h4 {
+  margin: 8px 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
 .typing {
   color: var(--text-dim);
   font-style: italic;

@@ -16,4 +16,8 @@ def chat(req: ChatRequest):
             yield f"data: {json.dumps(chunk, ensure_ascii=False)}\n\n"
         yield "data: [DONE]\n\n"
 
-    return StreamingResponse(gen(), media_type="text/event-stream")
+    return StreamingResponse(
+        gen(),
+        media_type="text/event-stream",
+        headers={"Content-Type": "text/event-stream; charset=utf-8"},
+    )

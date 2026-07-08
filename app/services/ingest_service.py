@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from app.config import ROOT
+from app.utils.text_io import read_text_auto
 from app.services.chunker import chunk_markdown
 from app.services.vector_store import add_chunks, count, clear
 from app.services.retriever import build_bm25_index
@@ -11,7 +12,7 @@ def ingest_dir(dir_path: Path, source_type: str) -> list[dict]:
     if not dir_path.exists():
         return all_chunks
     for md in dir_path.glob("*.md"):
-        text = md.read_text(encoding="utf-8")
+        text = read_text_auto(md)
         chunks = chunk_markdown(text, source=md.name, source_type=source_type)
         all_chunks.extend(chunks)
     return all_chunks

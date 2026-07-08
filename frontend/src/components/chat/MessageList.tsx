@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { MessageInfo } from "../../api/client";
+import { renderMarkdown } from "../../utils/markdown";
 import "./MessageList.css";
 
 interface Props {
@@ -30,7 +31,14 @@ export default function MessageList({ messages, loading, streaming }: Props) {
       {messages.map((m) => (
         <div key={m.id} className={`message ${m.role}`}>
           <div className="message-role">{m.role === "user" ? "你" : "AI"}</div>
-          <div className="message-content">{m.content}</div>
+          {m.role === "assistant" ? (
+            <div
+              className="message-content markdown"
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }}
+            />
+          ) : (
+            <div className="message-content">{m.content}</div>
+          )}
         </div>
       ))}
       {streaming && messages[messages.length - 1]?.role !== "assistant" && (
