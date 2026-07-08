@@ -103,3 +103,36 @@ class ChatRequest(BaseModel):
 class ChatChunk(BaseModel):
     delta: str = ""
     sources: list[str] = []
+
+
+class RagChunkRequest(BaseModel):
+    text: str
+    chunk_size: int = 200
+    chunk_overlap: int = 50
+    mode: str = "simple"  # simple | markdown
+
+
+class RagChunkResponse(BaseModel):
+    chunks: list[str]
+    sections: list[str]
+    chunk_count: int
+    mode: str
+
+
+class RagRetrieveRequest(BaseModel):
+    query: str
+    top_k: int = 3
+
+
+class RagRetrieveHit(BaseModel):
+    content: str
+    score: float
+    source: str = ""
+    section: str = ""
+
+
+class RagRetrieveResponse(BaseModel):
+    query: str
+    hits: list[RagRetrieveHit]
+    total_in_store: int
+    message: str | None = None

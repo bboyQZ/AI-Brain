@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+const BASE = import.meta.env.VITE_API_BASE || "/api";
 
 export interface TokenPiece {
   id: number;
@@ -65,6 +65,27 @@ export interface MessageInfo {
 export interface SessionHistory {
   session: SessionInfo;
   messages: MessageInfo[];
+}
+
+export interface RagChunkResponse {
+  chunks: string[];
+  sections: string[];
+  chunk_count: number;
+  mode: string;
+}
+
+export interface RagRetrieveHit {
+  content: string;
+  score: number;
+  source: string;
+  section: string;
+}
+
+export interface RagRetrieveResponse {
+  query: string;
+  hits: RagRetrieveHit[];
+  total_in_store: number;
+  message: string | null;
 }
 
 export const api = {
@@ -138,5 +159,30 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ session_id: sessionId, query }),
     });
+  },
+
+  async ragChunk(text: string, chunkSize: number, chunkOverlap: number, mode: "simple" | "markdown") {
+    const res = await fetch(`${BASE}/rag/chunk`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text,
+        chunk_size: chunkSize,
+        chunk_overlap: chunkOverlap,
+        mode,
+      }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json() as Promise<RagChunkResponse>;
+  },
+
+  async ragRetrieve(query: string, topK: number = 3) {
+    const res = await fetch(`${BASE}/rag/retrieve`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, top_k: topK }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json() as Promise<RagRetrieveResponse>;
   },
 };

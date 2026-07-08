@@ -19,6 +19,11 @@ export function useSession() {
         setCurrentId(savedId);
       } else if (list.length > 0) {
         setCurrentId(list[0].id);
+      } else {
+        const s = await api.createSession("新对话");
+        setSessions([s]);
+        setCurrentId(s.id);
+        localStorage.setItem(SESSION_KEY, String(s.id));
       }
     } catch (e) {
       console.error("load sessions failed", e);
@@ -29,20 +34,31 @@ export function useSession() {
     loadSessions();
   }, [loadSessions]);
 
-  const switchTo = useCallback(async (id: number) => {
+  const switchTo = useCallback((id: number) => {
     setCurrentId(id);
     localStorage.setItem(SESSION_KEY, String(id));
-    setLoading(true);
-    try {
-      const hist = await api.getHistory(id);
-      setMessages(hist.messages);
-    } catch (e) {
-      console.error("load history failed", e);
-      setMessages([]);
-    } finally {
-      setLoading(false);
-    }
   }, []);
+
+  useEffect(() => {
+    if (!currentId) {
+      setMessages([]);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    api.getHistory(currentId)
+      .then((hist) => {
+        if (!cancelled) setMessages(hist.messages);
+      })
+      .catch((e) => {
+        console.error("load history failed", e);
+        if (!cancelled) setMessages([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [currentId]);
 
   const createNew = useCallback(async () => {
     const s = await api.createSession("新对话");

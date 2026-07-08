@@ -15,15 +15,28 @@ export default function ChatPage() {
   const [sending, setSending] = useState(false);
 
   const handleSend = useCallback(async (text: string) => {
-    if (!currentId) return;
+    let sessionId = currentId;
+    if (!sessionId) {
+      try {
+        const s = await createNew();
+        sessionId = s.id;
+      } catch {
+        appendMessage({
+          id: -Date.now(), session_id: 0, role: "assistant",
+          content: "无法连接后端，请确认服务已启动（python -m uvicorn app.main:app --port 8000）。",
+          created_at: "",
+        });
+        return;
+      }
+    }
     setSending(true);
-    const userMsg = await api.addMessage(currentId, "user", text);
+    const userMsg = await api.addMessage(sessionId, "user", text);
     appendMessage(userMsg);
     appendStreaming("assistant", "");
 
     let assistantContent = "";
     await streamChat(
-      currentId,
+      sessionId,
       text,
       (delta) => {
         assistantContent += delta;
@@ -37,7 +50,7 @@ export default function ChatPage() {
         setSending(false);
       },
     );
-  }, [currentId, appendMessage, appendStreaming]);
+  }, [currentId, createNew, appendMessage, appendStreaming]);
 
   return (
     <div className="chat-page">
@@ -49,7 +62,7 @@ export default function ChatPage() {
       />
       <div className="chat-main">
         <MessageList messages={messages} loading={loading} streaming={sending} />
-        <MessageInput onSend={handleSend} disabled={sending || !currentId} />
+        <MessageInput onSend={handleSend} disabled={sending} />
       </div>
     </div>
   );

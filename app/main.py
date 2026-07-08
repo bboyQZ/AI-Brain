@@ -4,17 +4,26 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import CORS_ORIGINS
+from app.config import CORS_ORIGINS, AUTO_INGEST_ON_STARTUP
 from app.db import init_db
-from app.routers import tokenize, embed, attention, sessions, chat, ingest
-from app.services.retriever import build_bm25_from_store
+from app.routers import tokenize, embed, attention, sessions, chat, ingest, rag
+from app.services.ingest_service import auto_ingest_if_needed
 from app.services.vector_store import count
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-    if count() > 0:
+    if AUTO_INGEST_ON_STARTUP:
+        result = auto_ingest_if_needed()
+        if result:
+            print(
+                f"[auto-ingest] {result['ingested']} chunks ingested, "
+                f"total {result['total']} in vector store"
+            )
+    elif count() > 0:
+        from app.services.retriever import build_bm25_from_store
+
         build_bm25_from_store()
     yield
 
@@ -35,6 +44,7 @@ app.include_router(attention.router)
 app.include_router(sessions.router)
 app.include_router(chat.router)
 app.include_router(ingest.router)
+app.include_router(rag.router)
 
 
 @app.get("/health")

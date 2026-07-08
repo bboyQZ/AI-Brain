@@ -13,6 +13,13 @@ DATA_DIR = ROOT / "data"
 EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "BAAI/bge-base-zh")
 TIKTOKEN_ENCODING = "cl100k_base"
 
+# 启动时检测 curriculum/、knowledge/ 变更并自动入库
+AUTO_INGEST_ON_STARTUP = os.getenv("AUTO_INGEST_ON_STARTUP", "true").lower() in (
+    "1",
+    "true",
+    "yes",
+)
+
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "volcano")
 
 # 火山方舟（OpenAI 兼容）：模型填控制台「推理接入点 ID」，形如 ep-xxxxxxxx

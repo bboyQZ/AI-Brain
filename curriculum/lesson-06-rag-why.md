@@ -252,6 +252,4 @@ python ".\examples\lesson06_rag_intro.py"
 
 ## 下一课预告
 
-> **为什么文档不能直接拿给 GPT，而要先变成向量（Embedding）？**
-
-这节课会把之前学过的 **Embedding** 和 **RAG** 完全串联起来——你会第一次真正体会到 Embedding 在实际工程中的作用。
+[Lesson 7：Chunk、Retriever 与 LangChain 实现](lesson-07-rag-chunk-retriever.md) — 文档切块、向量检索、最小 RAG 代码与 `invoke()` 的含义。

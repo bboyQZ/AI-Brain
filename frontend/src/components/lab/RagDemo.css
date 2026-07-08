@@ -1,0 +1,153 @@
+@import "./TokenizeDemo.css";
+
+.rag-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1100px;
+}
+
+.rag-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .rag-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rag-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rag-panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0;
+}
+
+.rag-doc {
+  min-height: 140px;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.rag-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.rag-control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.rag-control input,
+.rag-control select {
+  padding: 6px 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+  min-width: 100px;
+}
+
+.rag-hint,
+.rag-store-info {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+.rag-warn {
+  font-size: 13px;
+  color: #f0a060;
+  padding: 10px 12px;
+  background: rgba(240, 160, 96, 0.08);
+  border-radius: var(--radius);
+  border: 1px solid rgba(240, 160, 96, 0.2);
+}
+
+.chunk-list,
+.hit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.chunk-card,
+.hit-card {
+  padding: 10px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.chunk-meta,
+.hit-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.chunk-len {
+  margin-left: auto;
+  font-family: var(--mono);
+}
+
+.hit-rank {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.hit-score {
+  font-family: var(--mono);
+  color: #6dd4a0;
+}
+
+.hit-src {
+  font-family: var(--mono);
+}
+
+.hit-section {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.chunk-text,
+.hit-text {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--mono);
+  color: var(--text);
+}
+
+.rag-flow {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 12px;
+  border-top: 1px dashed var(--border);
+}

@@ -23,7 +23,7 @@ export default function MessageList({ messages, loading, streaming }: Props) {
           <div className="welcome-icon">🧠</div>
           <div className="welcome-title">AI-Brain Chat</div>
           <div className="welcome-subtitle">
-            和你的课程知识库对话。先在右侧创建一个对话，然后开始提问。
+            和你的课程知识库对话。输入问题即可开始，或点击左侧「新建对话」。
           </div>
         </div>
       )}

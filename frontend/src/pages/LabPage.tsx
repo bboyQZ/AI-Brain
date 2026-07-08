@@ -2,14 +2,16 @@ import { useState } from "react";
 import TokenizeDemo from "../components/lab/TokenizeDemo";
 import AttentionDemo from "../components/lab/AttentionDemo";
 import EmbeddingDemo from "../components/lab/EmbeddingDemo";
+import RagDemo from "../components/lab/RagDemo";
 import "./LabPage.css";
 
-type Tab = "tokenize" | "attention" | "embedding";
+type Tab = "tokenize" | "attention" | "embedding" | "rag";
 
 const TABS: { key: Tab; label: string; desc: string }[] = [
   { key: "tokenize", label: "Tokenize", desc: "看文本如何被切成 Token" },
   { key: "attention", label: "Attention", desc: "看注意力权重如何连接 Token" },
   { key: "embedding", label: "Embedding", desc: "看语义如何映射到向量空间" },
+  { key: "rag", label: "RAG", desc: "Chunk 切块 + 向量库检索（Lesson 6～7）" },
 ];
 
 export default function LabPage() {
@@ -37,6 +39,7 @@ export default function LabPage() {
         {tab === "tokenize" && <TokenizeDemo />}
         {tab === "attention" && <AttentionDemo />}
         {tab === "embedding" && <EmbeddingDemo />}
+        {tab === "rag" && <RagDemo />}
       </div>
     </div>
   );

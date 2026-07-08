@@ -1,0 +1,35 @@
+---
+description: 新增知识必须同步到概念实验室（如适用）并自动 RAG 入库
+globs: curriculum/**/*.md,knowledge/**/*.md,frontend/src/components/lab/**,frontend/src/pages/LabPage.tsx,examples/lesson*.py
+alwaysApply: false
+---
+
+# 知识同步规范
+
+在 `curriculum/`、`knowledge/` 或实验室相关代码中**新增或大幅修改知识**时，必须完成双通道同步。
+
+## 必做清单
+
+1. **落盘**：写入 `curriculum/lesson-NN-*.md`（正式课程）或 `knowledge/YYYY-MM-DD-*.md`（零散笔记）
+2. **RAG 立即入库**：写入后**必须**执行 `python "D:\develop\AI-Brain\scripts\ingest.py" --reset`
+3. **RAG 自动入库**：后端启动时会检测知识源指纹变更并自动全量入库（`AUTO_INGEST_ON_STARTUP=true`）
+4. **实验室**：若知识含可交互概念，在 `frontend/src/components/lab/` 增加或扩展演示，并注册到 `LabPage.tsx`
+5. **索引**：更新 `README.md` 课程目录表；有动手示例则加 `examples/lessonNN_*.py`
+6. **验证**：确认 ingest 输出条数合理；Chat 能检索到新内容
+
+## 实验室判定
+
+| 知识类型 | 实验室要求 |
+|----------|------------|
+| Token / Embedding / Attention | 必须有对应 Tab 或扩展现有 Demo |
+| RAG / Chunk / Retriever | 优先新增 RAG Tab；暂不可视化则记入 TODO |
+| 纯概念、背景说明 | RAG 入库即可，实验室非必须 |
+
+## 禁止
+
+- 只写 markdown 不执行 ingest
+- 假设「下次启动会自动入库」而跳过当次 `ingest.py`（Agent 落盘后须立即 ingest）
+
+## 推荐
+
+用户说「添加知识」「记笔记」「新课程」时，优先 invoke **`add-knowledge`** skill。

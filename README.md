@@ -27,6 +27,7 @@
 | 课次 | 主题 | 文档 |
 |------|------|------|
 | 6 | 为什么需要 RAG？ | [curriculum/lesson-06-rag-why.md](curriculum/lesson-06-rag-why.md) |
+| 7 | Chunk、Retriever 与 LangChain | [curriculum/lesson-07-rag-chunk-retriever.md](curriculum/lesson-07-rag-chunk-retriever.md) |
 
 ## 本地开发
 
@@ -49,8 +50,11 @@ ARK_MODEL=ep-你的接入点ID
 ### 2. 知识入库
 
 ```powershell
-python ".\scripts\ingest.py"
+python ".\scripts\ingest.py"           # 手动全量入库
+python ".\scripts\ingest.py" --reset   # 清空后重建
 ```
+
+**自动入库**：后端启动时检测 `curriculum/`、`knowledge/` 变更并自动入库（`AUTO_INGEST_ON_STARTUP=true`，默认开启）。新增课程后仍建议立即执行 `--reset`，无需重启即可 Chat 检索。
 
 ### 3. 启动后端
 
@@ -108,7 +112,7 @@ npm run dev
 - [ ] 后端 `/health` 返回 ok
 - [ ] 前端能打开，对话页可新建会话
 - [ ] Chat 流式回答正常
-- [ ] 概念实验室三个演示可用
+- [ ] 概念实验室四个演示可用（含 RAG Tab）
 
 ## 目录结构
 
@@ -133,4 +137,5 @@ python ".\examples\lesson03_embedding_vector.py"
 python ".\examples\lesson04_attention.py"
 python ".\examples\lesson05_workflow.py"
 python ".\examples\lesson06_rag_intro.py"
+python ".\examples\lesson07_rag_chunk.py"
 ```
