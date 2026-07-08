@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.db import init_db
-from app.routers import tokenize, embed, attention, sessions
+from app.routers import tokenize, embed, attention, sessions, chat
 
 
 @asynccontextmanager
@@ -19,6 +19,7 @@ app.include_router(tokenize.router)
 app.include_router(embed.router)
 app.include_router(attention.router)
 app.include_router(sessions.router)
+app.include_router(chat.router)
 
 
 @app.get("/health")

@@ -93,3 +93,13 @@ class MessageInfo(BaseModel):
 class SessionHistory(BaseModel):
     session: SessionInfo
     messages: list[MessageInfo]
+
+
+class ChatRequest(BaseModel):
+    session_id: int
+    query: str
+
+
+class ChatChunk(BaseModel):
+    delta: str = ""
+    sources: list[str] = []
