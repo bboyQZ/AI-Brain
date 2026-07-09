@@ -1,3 +1,4 @@
+from app.models.schemas import SourceRef
 from app.services.retriever import hybrid_retrieve
 from app.services.llm_client import get_llm
 from app.services.session_store import add_message
@@ -26,12 +27,38 @@ def build_context(results: list[dict]) -> str:
     return "\n\n".join(parts)
 
 
+def build_source_refs(results: list[dict]) -> list[SourceRef]:
+    """把检索结果组装为结构化引用，按 source+heading_path 去重、保留检索顺序。"""
+    refs: list[SourceRef] = []
+    seen: set[tuple[str, str]] = set()
+    for r in results:
+        meta = r.get("metadata", {})
+        source = meta.get("source", "")
+        if not source:
+            continue
+        heading_path = meta.get("heading_path", "") or meta.get("section", "")
+        key = (source, heading_path)
+        if key in seen:
+            continue
+        seen.add(key)
+        refs.append(SourceRef(
+            source=source,
+            source_type=meta.get("source_type", ""),
+            section=meta.get("section", ""),
+            heading_path=heading_path,
+        ))
+    return refs
+
+
 def rag_chat(session_id: int, query: str):
-    """流式 RAG 问答生成器。yield dict(delta=..., sources=...)。"""
+    """流式 RAG 问答生成器。yield dict(delta=..., sources=...)。
+
+    注意：用户消息由前端通过 POST /sessions/{id}/messages 落库，
+    这里只负责流式生成并落库 assistant 消息（含引用），避免重复存储。
+    """
     results = hybrid_retrieve(query, top_k=4)
     context = build_context(results)
     prompt = PROMPT_TEMPLATE.format(context=context, query=query)
-    add_message(session_id, "user", query)
 
     messages = [
         {"role": "system", "content": "你是一个 AI 学习助手。"},
@@ -40,7 +67,8 @@ def rag_chat(session_id: int, query: str):
     llm = get_llm()
     stream = llm.chat(messages, stream=True)
 
-    sources = [r.get("metadata", {}).get("heading_path", "") for r in results]
+    source_refs = build_source_refs(results)
+    sources_payload = [s.model_dump() for s in source_refs]
     full = ""
     sent_sources = False
     for chunk in stream:
@@ -48,7 +76,7 @@ def rag_chat(session_id: int, query: str):
         full += delta
         payload = {"delta": delta}
         if not sent_sources:
-            payload["sources"] = sources
+            payload["sources"] = sources_payload
             sent_sources = True
         yield payload
-    add_message(session_id, "assistant", full)
+    add_message(session_id, "assistant", full, sources=source_refs)

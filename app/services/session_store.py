@@ -1,9 +1,20 @@
 # app/services/session_store.py
+import json
+
 from app.db import get_conn
-from app.models.schemas import SessionInfo, MessageInfo
+from app.models.schemas import SessionInfo, MessageInfo, SourceRef
 
 
 DEFAULT_SESSION_TITLE = "新对话"
+
+
+def _parse_sources(raw: str | None) -> list[SourceRef]:
+    if not raw:
+        return []
+    try:
+        return [SourceRef(**item) for item in json.loads(raw)]
+    except (json.JSONDecodeError, TypeError):
+        return []
 
 
 def _derive_session_title(content: str, limit: int = 20) -> str:
@@ -25,7 +36,10 @@ def create_session(title: str) -> SessionInfo:
     return SessionInfo(id=row["id"], title=row["title"], created_at=row["created_at"])
 
 
-def add_message(session_id: int, role: str, content: str) -> MessageInfo:
+def add_message(
+    session_id: int, role: str, content: str,
+    sources: list[SourceRef] | None = None,
+) -> MessageInfo:
     conn = get_conn()
 
     should_auto_title = False
@@ -38,9 +52,13 @@ def add_message(session_id: int, role: str, content: str) -> MessageInfo:
             ).fetchone()["c"]
             should_auto_title = user_count == 0
 
+    sources_json = (
+        json.dumps([s.model_dump() for s in sources], ensure_ascii=False)
+        if sources else None
+    )
     cur = conn.execute(
-        "INSERT INTO messages(session_id, role, content) VALUES (?, ?, ?)",
-        (session_id, role, content),
+        "INSERT INTO messages(session_id, role, content, sources) VALUES (?, ?, ?, ?)",
+        (session_id, role, content, sources_json),
     )
     mid = cur.lastrowid
 
@@ -54,6 +72,7 @@ def add_message(session_id: int, role: str, content: str) -> MessageInfo:
     return MessageInfo(
         id=row["id"], session_id=row["session_id"],
         role=row["role"], content=row["content"], created_at=row["created_at"],
+        sources=_parse_sources(row["sources"]),
     )
 
 
@@ -86,7 +105,8 @@ def get_history(session_id: int) -> list[MessageInfo]:
     conn.close()
     return [
         MessageInfo(id=r["id"], session_id=r["session_id"], role=r["role"],
-                    content=r["content"], created_at=r["created_at"])
+                    content=r["content"], created_at=r["created_at"],
+                    sources=_parse_sources(r["sources"]))
         for r in rows
     ]
 

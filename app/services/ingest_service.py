@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from app.config import ROOT, DATA_DIR
@@ -14,6 +15,48 @@ KNOWLEDGE_DIRS: tuple[tuple[Path, str], ...] = (
     (ROOT / "curriculum", "curriculum"),
     (ROOT / "knowledge", "note"),
 )
+
+
+def _extract_title(text: str, fallback: str) -> str:
+    m = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
+    return m.group(1).strip() if m else fallback
+
+
+def list_knowledge_docs() -> list[dict]:
+    """列出 curriculum/ + knowledge/ 全部文档元信息（不含正文）。
+
+    课程按文件名正序（lesson-01 在前），笔记按文件名倒序（日期新的在前）。
+    """
+    docs: list[dict] = []
+    for dir_path, source_type in KNOWLEDGE_DIRS:
+        if not dir_path.exists():
+            continue
+        files = sorted(dir_path.glob("*.md"), reverse=(source_type == "note"))
+        for md in files:
+            text = read_text_auto(md)
+            docs.append({
+                "id": md.name,
+                "title": _extract_title(text, md.stem),
+                "source_type": source_type,
+            })
+    return docs
+
+
+def read_knowledge_doc(doc_id: str) -> dict | None:
+    """按文件名读取单篇文档原文。找不到或文件名非法时返回 None。"""
+    if doc_id != Path(doc_id).name or not doc_id.endswith(".md"):
+        return None
+    for dir_path, source_type in KNOWLEDGE_DIRS:
+        candidate = dir_path / doc_id
+        if candidate.is_file():
+            text = read_text_auto(candidate)
+            return {
+                "id": doc_id,
+                "title": _extract_title(text, candidate.stem),
+                "source_type": source_type,
+                "content": text,
+            }
+    return None
 
 
 def ingest_dir(dir_path: Path, source_type: str) -> list[dict]:

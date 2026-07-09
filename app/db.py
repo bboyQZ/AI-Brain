@@ -28,5 +28,9 @@ def init_db() -> None:
     );
     CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id);
     """)
+    # 轻量迁移：老库补 sources 列（存结构化引用 JSON，旧数据为 NULL）
+    cols = {r["name"] for r in conn.execute("PRAGMA table_info(messages)").fetchall()}
+    if "sources" not in cols:
+        conn.execute("ALTER TABLE messages ADD COLUMN sources TEXT")
     conn.commit()
     conn.close()

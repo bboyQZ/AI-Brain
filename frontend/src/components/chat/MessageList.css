@@ -188,6 +188,72 @@
   color: var(--text-dim);
   font-size: 12px;
   line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.message-content.markdown .source-tag:hover {
+  background: rgba(124, 108, 255, 0.12);
+  border-color: rgba(124, 108, 255, 0.3);
+  color: var(--text);
+}
+
+.source-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.source-chips-label {
+  font-size: 12px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 320px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  color: var(--text-dim);
+  transition: all 0.15s;
+}
+
+.source-chip:hover {
+  background: rgba(124, 108, 255, 0.14);
+  border-color: rgba(124, 108, 255, 0.35);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.source-chip-badge {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(124, 108, 255, 0.16);
+  color: #b8a4ff;
+}
+
+.source-chip-badge.note {
+  background: rgba(94, 200, 160, 0.14);
+  color: #7fd8b4;
+}
+
+.source-chip-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .message-content.markdown h3,

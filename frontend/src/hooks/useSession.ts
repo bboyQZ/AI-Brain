@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { api, type SessionInfo, type MessageInfo } from "../api/client";
+import { api, type SessionInfo, type MessageInfo, type SourceRef } from "../api/client";
 
 const SESSION_KEY = "ai-brain-session-id";
 
@@ -115,9 +115,20 @@ export function useSession() {
     });
   }, [currentId]);
 
+  /** 给正在流式生成的最后一条消息挂上引用来源 */
+  const attachSources = useCallback((sources: SourceRef[]) => {
+    setMessages((prev) => {
+      const last = prev[prev.length - 1];
+      if (last && last.role === "assistant" && last.id < 0) {
+        return [...prev.slice(0, -1), { ...last, sources }];
+      }
+      return prev;
+    });
+  }, []);
+
   return {
     sessions, currentId, messages, loading,
     loadSessions, switchTo, createNew, refreshSessions, removeSession,
-    appendMessage, appendStreaming,
+    appendMessage, appendStreaming, attachSources,
   };
 }

@@ -7,8 +7,10 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT / ".env")
 
-DB_PATH = ROOT / "data" / "chat.db"
-DATA_DIR = ROOT / "data"
+# 数据目录（chat.db、chroma/、ingest_manifest.json）。
+# 测试通过 AI_BRAIN_DATA_DIR 指向临时目录，避免污染真实数据。
+DATA_DIR = Path(os.getenv("AI_BRAIN_DATA_DIR", str(ROOT / "data")))
+DB_PATH = DATA_DIR / "chat.db"
 
 EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "BAAI/bge-base-zh")
 TIKTOKEN_ENCODING = "cl100k_base"

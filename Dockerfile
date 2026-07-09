@@ -4,7 +4,8 @@ WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    EMBEDDING_MODEL_NAME=BAAI/bge-small-zh
+    EMBEDDING_MODEL_NAME=BAAI/bge-small-zh \
+    AUTO_INGEST_ON_STARTUP=false
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential \

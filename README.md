@@ -89,10 +89,12 @@ npm run dev
 | `ARK_BASE_URL` | `https://ark.cn-beijing.volces.com/api/v3` |
 | `ARK_MODEL` | `ep-xxxxxxxx` 接入点 ID |
 | `EMBEDDING_MODEL_NAME` | `BAAI/bge-small-zh`（免费层推荐） |
+| `AUTO_INGEST_ON_STARTUP` | `false`（部署后手动 `POST /ingest?reset=true` 入库，避免启动 OOM） |
 | `CORS_ORIGINS` | `https://你的前端.vercel.app` |
 
-4. 部署完成后访问 `https://xxx.up.railway.app/health` 确认
-5. 在 `/docs` 调用 `POST /ingest` 完成线上入库
+4. **内存**：免费层 1 GB 在加载 embedding 模型时可能 OOM。建议在 Railway **Settings → Resources** 将内存调到 **≥ 2 GB**，或保持 `AUTO_INGEST_ON_STARTUP=false` 并在低峰手动入库。
+5. 部署完成后访问 `https://xxx.up.railway.app/health` 确认
+6. 在 `/docs` 调用 `POST /ingest?reset=true` 完成线上入库
 
 ### Vercel 前端
 

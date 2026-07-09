@@ -1,4 +1,4 @@
-import { api } from "../api/client";
+import { api, type SourceRef } from "../api/client";
 
 export async function streamChat(
   sessionId: number,
@@ -6,6 +6,7 @@ export async function streamChat(
   onDelta: (delta: string) => void,
   onDone: () => void,
   onError: (err: unknown) => void,
+  onSources?: (sources: SourceRef[]) => void,
 ) {
   try {
     const resp = await api.chat(sessionId, query);
@@ -28,6 +29,9 @@ export async function streamChat(
           if (data === "[DONE]") { onDone(); return; }
           try {
             const parsed = JSON.parse(data);
+            if (Array.isArray(parsed.sources) && parsed.sources.length > 0) {
+              onSources?.(parsed.sources as SourceRef[]);
+            }
             if (parsed.delta) onDelta(parsed.delta);
           } catch { /* skip */ }
         }

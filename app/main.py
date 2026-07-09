@@ -1,4 +1,5 @@
 # app/main.py
+import threading
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -6,25 +7,34 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import CORS_ORIGINS, AUTO_INGEST_ON_STARTUP
 from app.db import init_db
-from app.routers import tokenize, embed, attention, sessions, chat, ingest, rag
+from app.routers import tokenize, embed, attention, sessions, chat, ingest, rag, knowledge
 from app.services.ingest_service import auto_ingest_if_needed
 from app.services.vector_store import count
+
+
+def _run_startup_tasks() -> None:
+    """耗时/占内存的启动任务（embedding 模型加载、入库、BM25 索引）。"""
+    try:
+        if AUTO_INGEST_ON_STARTUP:
+            result = auto_ingest_if_needed()
+            if result:
+                print(
+                    f"[auto-ingest] {result['ingested']} chunks ingested, "
+                    f"total {result['total']} in vector store"
+                )
+        elif count() > 0:
+            from app.services.retriever import build_bm25_from_store
+
+            build_bm25_from_store()
+    except Exception as e:
+        print(f"[startup] background task failed: {e}")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-    if AUTO_INGEST_ON_STARTUP:
-        result = auto_ingest_if_needed()
-        if result:
-            print(
-                f"[auto-ingest] {result['ingested']} chunks ingested, "
-                f"total {result['total']} in vector store"
-            )
-    elif count() > 0:
-        from app.services.retriever import build_bm25_from_store
-
-        build_bm25_from_store()
+    # 后台执行重任务，让 /health 尽快可用（避免 Railway 健康检查超时 / 阻塞）
+    threading.Thread(target=_run_startup_tasks, daemon=True).start()
     yield
 
 
@@ -45,6 +55,7 @@ app.include_router(sessions.router)
 app.include_router(chat.router)
 app.include_router(ingest.router)
 app.include_router(rag.router)
+app.include_router(knowledge.router)
 
 
 @app.get("/health")

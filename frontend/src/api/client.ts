@@ -54,12 +54,30 @@ export interface SessionInfo {
   created_at: string;
 }
 
+export interface SourceRef {
+  source: string;       // 文件名，如 lesson-01-token-tokenizer.md
+  source_type: string;  // "curriculum" | "note"
+  section: string;      // 末级标题
+  heading_path: string; // 标题路径，如 "本课目标 > 核心概念 > Token"
+}
+
 export interface MessageInfo {
   id: number;
   session_id: number;
   role: string;
   content: string;
   created_at: string;
+  sources?: SourceRef[];
+}
+
+export interface KnowledgeDocInfo {
+  id: string;
+  title: string;
+  source_type: string; // "curriculum" | "note"
+}
+
+export interface KnowledgeDocDetail extends KnowledgeDocInfo {
+  content: string;
 }
 
 export interface SessionHistory {
@@ -199,5 +217,17 @@ export const api = {
     });
     if (!res.ok) throw new Error(await res.text());
     return res.json() as Promise<RagRetrieveResponse>;
+  },
+
+  async listKnowledgeDocs(): Promise<KnowledgeDocInfo[]> {
+    const res = await fetch(`${BASE}/knowledge/docs`);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  async getKnowledgeDoc(docId: string): Promise<KnowledgeDocDetail> {
+    const res = await fetch(`${BASE}/knowledge/docs/${encodeURIComponent(docId)}`);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
   },
 };

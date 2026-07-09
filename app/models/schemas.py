@@ -81,6 +81,14 @@ class SessionInfo(BaseModel):
     created_at: str
 
 
+class SourceRef(BaseModel):
+    """一条引用来源：定位到知识库某文档的某章节。"""
+    source: str            # 文件名，如 lesson-01-token-tokenizer.md
+    source_type: str = ""  # "curriculum" | "note"
+    section: str = ""      # 末级标题
+    heading_path: str = "" # 标题路径，如 "本课目标 > 核心概念 > Token"
+
+
 class MessageCreate(BaseModel):
     role: str  # "user" | "assistant"
     content: str
@@ -92,6 +100,7 @@ class MessageInfo(BaseModel):
     role: str
     content: str
     created_at: str
+    sources: list[SourceRef] = []
 
 
 class SessionHistory(BaseModel):
@@ -106,7 +115,17 @@ class ChatRequest(BaseModel):
 
 class ChatChunk(BaseModel):
     delta: str = ""
-    sources: list[str] = []
+    sources: list[SourceRef] = []
+
+
+class KnowledgeDocInfo(BaseModel):
+    id: str           # 文件名（含 .md）
+    title: str        # 首个 # 标题，缺省用文件名
+    source_type: str  # "curriculum" | "note"
+
+
+class KnowledgeDocDetail(KnowledgeDocInfo):
+    content: str  # 原始 markdown
 
 
 class RagChunkRequest(BaseModel):

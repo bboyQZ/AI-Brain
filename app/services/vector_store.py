@@ -57,7 +57,7 @@ def count() -> int:
 
 def clear() -> None:
     global _collection
-    if _client is not None:
-        _client.delete_collection("ai_brain")
-        _collection = None
-        _get_collection()
+    _get_collection()  # 确保 client 已初始化，否则从未查询过的进程里 clear 会静默失效
+    _client.delete_collection("ai_brain")
+    _collection = None
+    _get_collection()

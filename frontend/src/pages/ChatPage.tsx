@@ -10,7 +10,8 @@ import "./ChatPage.css";
 export default function ChatPage() {
   const {
     sessions, currentId, messages, loading,
-    switchTo, createNew, refreshSessions, removeSession, appendMessage, appendStreaming,
+    switchTo, createNew, refreshSessions, removeSession,
+    appendMessage, appendStreaming, attachSources,
   } = useSession();
   const [sending, setSending] = useState(false);
 
@@ -57,8 +58,13 @@ export default function ChatPage() {
         appendStreaming("assistant", `（出错了：${err instanceof Error ? err.message : String(err)}）`);
         setSending(false);
       },
+      (sources) => {
+        // sources 在首帧先于 delta 到达；先占位再挂引用
+        appendStreaming("assistant", assistantContent);
+        attachSources(sources);
+      },
     );
-  }, [currentId, createNew, refreshSessions, appendMessage, appendStreaming]);
+  }, [currentId, createNew, refreshSessions, appendMessage, appendStreaming, attachSources]);
 
   return (
     <div className="chat-page">

@@ -1,0 +1,306 @@
+.knowledge-page {
+  display: flex;
+  height: 100%;
+}
+
+/* ---- 左侧文档列表 ---- */
+
+.knowledge-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 10px;
+  overflow-y: auto;
+}
+
+.knowledge-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.knowledge-sidebar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.doc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.doc-group-title {
+  padding: 0 14px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+
+.doc-group-empty {
+  padding: 4px 14px 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+  opacity: 0.7;
+}
+
+.doc-item {
+  padding: 9px 14px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 13px;
+  color: var(--text);
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.doc-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.doc-item.active {
+  background: rgba(124, 108, 255, 0.1);
+  font-weight: 500;
+}
+
+.doc-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.knowledge-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  text-align: center;
+}
+
+.retry-btn {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.15s;
+}
+
+.retry-btn:hover {
+  background: rgba(124, 108, 255, 0.14);
+  border-color: rgba(124, 108, 255, 0.3);
+}
+
+/* ---- 右侧阅读区 ---- */
+
+.knowledge-main {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+.knowledge-main::-webkit-scrollbar {
+  width: 6px;
+}
+
+.knowledge-main::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.knowledge-main-inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 28px 32px 64px;
+}
+
+.doc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 16px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-type-badge {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(124, 108, 255, 0.16);
+  color: #b8a4ff;
+}
+
+.doc-type-badge.note {
+  background: rgba(94, 200, 160, 0.14);
+  color: #7fd8b4;
+}
+
+.doc-file-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* ---- Markdown 正文 ---- */
+
+.doc-article {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.doc-article h1,
+.doc-article h2,
+.doc-article h3,
+.doc-article h4 {
+  margin: 28px 0 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+  scroll-margin-top: 16px;
+  border-radius: 6px;
+  transition: background 0.6s ease, box-shadow 0.6s ease;
+}
+
+.doc-article h1 {
+  font-size: 26px;
+  margin-top: 16px;
+}
+
+.doc-article h2 {
+  font-size: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-article h3 {
+  font-size: 17px;
+}
+
+.doc-article h4 {
+  font-size: 15px;
+}
+
+.heading-highlight {
+  background: rgba(124, 108, 255, 0.18);
+  box-shadow: 0 0 0 6px rgba(124, 108, 255, 0.18);
+}
+
+.doc-article p {
+  margin: 10px 0;
+}
+
+.doc-article ul,
+.doc-article ol {
+  margin: 10px 0;
+  padding-left: 24px;
+}
+
+.doc-article li {
+  margin: 4px 0;
+}
+
+.doc-article code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(124, 108, 255, 0.12);
+  border: 1px solid rgba(124, 108, 255, 0.15);
+}
+
+.doc-article pre {
+  margin: 14px 0;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.doc-article pre code {
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.doc-article blockquote {
+  margin: 14px 0;
+  padding: 8px 16px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: rgba(124, 108, 255, 0.06);
+  color: var(--text-dim);
+}
+
+.doc-article blockquote p {
+  margin: 4px 0;
+}
+
+.doc-article table {
+  width: 100%;
+  margin: 14px 0;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.doc-article th,
+.doc-article td {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.doc-article th {
+  background: var(--bg-elevated);
+  font-weight: 600;
+}
+
+.doc-article tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.doc-article hr {
+  margin: 24px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+.doc-article a {
+  color: #b8a4ff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(184, 164, 255, 0.4);
+}
+
+.doc-article a:hover {
+  text-decoration-color: #b8a4ff;
+}
+
+.doc-article img {
+  max-width: 100%;
+  border-radius: 10px;
+}
