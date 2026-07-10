@@ -227,3 +227,6 @@ frontend/.env.production
 
 # Isolated git worktrees (安全目录，不进入版本库)
 .worktrees/
+
+# Brainstorm / visual companion session files
+.superpowers/
