@@ -1,0 +1,44 @@
+---
+description: 改动源码导读覆盖的代码后必须同步更新导读；讲解要详细；纯前端 UI 不进导读
+alwaysApply: true
+---
+
+# 源码导读同步规范
+
+## 何时必须更新导读
+
+改动完成后，若触及 **源码导读已收录的节点**（见 `frontend/src/guide/flows.ts` 里各节点的 `file` / `symbol`），必须同步更新：
+
+1. `frontend/src/guide/flows.ts` — 节点、边、跳转、摘要（结构变了才改）
+2. `frontend/src/guide/explains.ts` — **方块 blurb + 行级讲解**（逻辑/行为变了必改）
+
+讲解要求：
+
+- 尽可能**详细、白话**，按代码真实行号分段（`line` / `endLine`）
+- 说明「这段在干什么、为什么这样写、和上下游怎么连」
+- 改完后在 `/guide` 点开对应方块，确认源码截取与讲解仍对得上
+
+## 明确不进导读（本次与以后均适用）
+
+**仅仅是前端代码改动**时，**不要**写入或扩写源码导读，例如：
+
+- 页面布局、样式、主题、字体
+- 概念实验室 UI 壳（`LabPage` 分栏、富文本编辑器、`LabRichText`、localStorage 草稿、示例文本联动与截断策略等）
+- 纯展示/交互组件，无后端调用链教学价值的改动
+
+概念实验室若只改 `frontend/src/pages/LabPage.tsx`、`frontend/src/components/lab/*`、`frontend/src/lab-notes/*`、`frontend/src/utils/labSample.ts` 等前端文件：**不更新导读**。
+
+## 实验室相关何时要更新导读
+
+仅当改动的是导读已覆盖的**后端/脚本**能力时才更新，例如：
+
+- `app/services/rag_lab_service.py`、实验室相关 API
+- 入库 / 检索 / RAG 主链路等已在导读中的服务
+
+此时更新对应节点讲解，且保持详细。
+
+## 完成前自检
+
+- [ ] 本次改动的文件是否出现在 `flows.ts` 节点里？
+- [ ] 若是：已更新 `explains.ts`（必要时 `flows.ts`），讲解足够细
+- [ ] 若只是前端 UI：已确认**没有**往导读里塞新节点或灌水说明

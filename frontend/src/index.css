@@ -29,7 +29,9 @@
   --danger: #e11d48;
   --danger-bg: rgba(225, 29, 72, 0.1);
   --radius: 12px;
-  --font: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC",
+    "Noto Sans CJK SC", sans-serif;
   --mono: "JetBrains Mono", "Cascadia Code", "Consolas", monospace;
 }
 
@@ -141,8 +143,31 @@ input, textarea {
   background: var(--accent-soft);
 }
 
-.theme-toggle {
+/* PRIVATE chronicle：主题按钮左侧隐形热区 */
+.chronicle-hotzone {
   margin-left: auto;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: default;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.chronicle-hotzone:hover,
+.chronicle-hotzone:focus,
+.chronicle-hotzone:active {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: default;
+}
+
+.theme-toggle {
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 13px;

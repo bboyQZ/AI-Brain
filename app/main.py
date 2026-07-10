@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import CORS_ORIGINS, AUTO_INGEST_ON_STARTUP
 from app.db import init_db
-from app.routers import tokenize, embed, attention, sessions, chat, ingest, rag, knowledge
+from app.routers import tokenize, embed, attention, sessions, chat, ingest, rag, knowledge, guide
 from app.services.ingest_service import auto_ingest_if_needed
 from app.services.vector_store import count
 
@@ -56,6 +56,7 @@ app.include_router(chat.router)
 app.include_router(ingest.router)
 app.include_router(rag.router)
 app.include_router(knowledge.router)
+app.include_router(guide.router)
 
 
 @app.get("/health")

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { api, type RagRetrieveHit } from "../../api/client";
+import { LAB_SAMPLE_LIMITS, takePrefix } from "../../utils/labSample";
 import "./RagDemo.css";
 
 const SAMPLE_DOC = `Worker 负责从队列拉取任务并执行。若执行失败，任务会进入重试队列，最多重试 3 次。
@@ -13,8 +14,16 @@ Redis 用于缓存任务状态。
 
 需求评审 → 用例设计 → 执行 → 回归 → 上线。`;
 
-export default function RagDemo() {
-  const [doc, setDoc] = useState(SAMPLE_DOC);
+type Props = {
+  sampleText?: string;
+};
+
+export default function RagDemo({ sampleText }: Props) {
+  const docSlice = useMemo(
+    () => takePrefix(sampleText ?? SAMPLE_DOC, LAB_SAMPLE_LIMITS.ragChars),
+    [sampleText],
+  );
+  const doc = docSlice.text;
   const [chunkSize, setChunkSize] = useState(120);
   const [chunkOverlap, setChunkOverlap] = useState(30);
   const [chunkMode, setChunkMode] = useState<"simple" | "markdown">("simple");
@@ -63,13 +72,10 @@ export default function RagDemo() {
       <div className="rag-columns">
         <section className="rag-panel">
           <h3 className="rag-panel-title">① Chunk 切块</h3>
-          <label className="demo-label">示例文档</label>
-          <textarea
-            className="demo-input rag-doc"
-            value={doc}
-            onChange={(e) => setDoc(e.target.value)}
-            rows={8}
-          />
+          <p className="demo-sample-hint">
+            示例文档来自右侧共用「示例文本」，切块使用全文（上限 {LAB_SAMPLE_LIMITS.ragChars} 字
+            {docSlice.truncated ? `，已截断自 ${docSlice.originalLen} 字` : ""}）。
+          </p>
           <div className="rag-controls">
             <label className="rag-control">
               <span>chunk_size</span>

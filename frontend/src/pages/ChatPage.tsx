@@ -76,14 +76,18 @@ export default function ChatPage() {
         onDelete={removeSession}
       />
       <div className="chat-main">
-        <div className="chat-main-inner">
-          <MessageList
-            messages={messages}
-            loading={loading}
-            streaming={sending}
-            examplePrompts={examplePrompts}
-            onSelectPrompt={handleSend}
-          />
+        <div className="chat-scroll">
+          <div className="chat-main-inner">
+            <MessageList
+              messages={messages}
+              loading={loading}
+              streaming={sending}
+              examplePrompts={examplePrompts}
+              onSelectPrompt={handleSend}
+            />
+          </div>
+        </div>
+        <div className="chat-main-inner chat-input-wrap">
           <MessageInput onSend={handleSend} disabled={sending} />
         </div>
       </div>

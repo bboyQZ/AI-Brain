@@ -5,20 +5,38 @@
 
 .chat-main {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  align-items: stretch;
-  justify-content: flex-start;
   background: var(--bg);
 }
 
-.chat-main-inner {
+.chat-scroll {
   flex: 1;
   min-height: 0;
+  overflow-y: auto;
+}
+
+.chat-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.chat-main-inner {
   width: 100%;
   max-width: 880px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  min-height: 100%;
+}
+
+.chat-input-wrap {
+  flex-shrink: 0;
+  min-height: 0;
 }

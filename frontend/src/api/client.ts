@@ -80,6 +80,13 @@ export interface KnowledgeDocDetail extends KnowledgeDocInfo {
   content: string;
 }
 
+export interface GuideSource {
+  path: string;
+  symbol: string | null;
+  language: string;
+  code: string;
+}
+
 export interface SessionHistory {
   session: SessionInfo;
   messages: MessageInfo[];
@@ -227,6 +234,14 @@ export const api = {
 
   async getKnowledgeDoc(docId: string): Promise<KnowledgeDocDetail> {
     const res = await fetch(`${BASE}/knowledge/docs/${encodeURIComponent(docId)}`);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
+
+  async getGuideSource(path: string, symbol?: string): Promise<GuideSource> {
+    const q = new URLSearchParams({ path });
+    if (symbol) q.set("symbol", symbol);
+    const res = await fetch(`${BASE}/guide/source?${q}`);
     if (!res.ok) throw new Error(await res.text());
     return res.json();
   },

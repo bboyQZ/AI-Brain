@@ -29,6 +29,12 @@
 | 6 | 为什么需要 RAG？ | [curriculum/lesson-06-rag-why.md](curriculum/lesson-06-rag-why.md) |
 | 7 | Chunk、Retriever 与 LangChain | [curriculum/lesson-07-rag-chunk-retriever.md](curriculum/lesson-07-rag-chunk-retriever.md) |
 
+### 第三阶段：Prompt 与 Agent 基础
+
+| 课次 | 主题 | 文档 |
+|------|------|------|
+| 8 | Prompt 为什么能够控制 AI？ | [curriculum/lesson-08-prompt-context.md](curriculum/lesson-08-prompt-context.md) |
+
 ## 本地开发
 
 ### 1. 环境准备
@@ -120,15 +126,29 @@ npm run dev
 
 ```
 AI-Brain/
-├── app/            # 后端（FastAPI）
-├── frontend/       # 前端（Vite + React）
+├── app/            # 后端（FastAPI）     → 见 app/README.md
+├── frontend/       # 前端（Vite + React） → 见 frontend/README.md
+├── prompts/        # 模型提示词           → 见 prompts/README.md
+├── scripts/        # 入库与本地启动       → 见 scripts/README.md
 ├── curriculum/     # 课程文档（RAG 知识源）
 ├── knowledge/      # 每日笔记（RAG 知识源）
-├── scripts/        # 入库脚本
 ├── tests/          # 后端测试
+├── examples/       # 课程配套脚本
 ├── Dockerfile      # Railway 部署
 └── requirements.txt
 ```
+
+## 代码学习地图（推荐阅读顺序）
+
+**在网站里看（推荐）**：本地启动前端后打开顶栏 **「源码导读」**（`/guide`），含 Mermaid 调用路线图与白话讲解。概念实验室里也有 **Architecture** Tab 总览。
+
+文稿源文件在 [`docs/guide/`](docs/guide/)。仓库内短 README 仍可作速查：
+
+1. [app/README.md](app/README.md) — 后端全景  
+2. [app/services/README.md](app/services/README.md) — RAG 核心  
+3. [prompts/README.md](prompts/README.md) — 提示词  
+4. [frontend/README.md](frontend/README.md) — 前端  
+5. [scripts/README.md](scripts/README.md) — 入库与启动  
 
 ## 课程示例脚本
 

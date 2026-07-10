@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import ChatPage from "./pages/ChatPage";
 import LabPage from "./pages/LabPage";
 import KnowledgePage from "./pages/KnowledgePage";
+import GuidePage from "./pages/GuidePage";
+/** PRIVATE chronicle glue — 不进入导航/路由 */
+import ChronicleOverlay from "./chronicle/ChronicleOverlay";
 
 type Theme = "light" | "dark";
 
 const THEME_KEY = "ai-brain-theme";
+const CHRONICLE_LONG_PRESS_MS = 800;
 
 function readTheme(): Theme {
   try {
@@ -28,6 +32,8 @@ export default function App() {
     applyTheme(initial);
     return initial;
   });
+  const [chronicleOpen, setChronicleOpen] = useState(false);
+  const longPressTimer = useRef<number | null>(null);
 
   useEffect(() => {
     applyTheme(theme);
@@ -37,6 +43,23 @@ export default function App() {
       // ignore persistence failures
     }
   }, [theme]);
+
+  const clearLongPress = () => {
+    if (longPressTimer.current != null) {
+      window.clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const onHotZonePointerDown = (e: ReactPointerEvent<HTMLButtonElement>) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    clearLongPress();
+    longPressTimer.current = window.setTimeout(() => {
+      longPressTimer.current = null;
+      setChronicleOpen(true);
+    }, CHRONICLE_LONG_PRESS_MS);
+  };
 
   const toggleTheme = () => {
     setTheme((current) => (current === "light" ? "dark" : "light"));
@@ -57,7 +80,21 @@ export default function App() {
             <NavLink to="/knowledge" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
               知识库
             </NavLink>
+            <NavLink to="/guide" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              源码导读
+            </NavLink>
           </div>
+          <button
+            type="button"
+            className="chronicle-hotzone"
+            aria-hidden="true"
+            tabIndex={-1}
+            onPointerDown={onHotZonePointerDown}
+            onPointerUp={clearLongPress}
+            onPointerLeave={clearLongPress}
+            onPointerCancel={clearLongPress}
+            onContextMenu={(e) => e.preventDefault()}
+          />
           <button
             type="button"
             className="theme-toggle"
@@ -73,8 +110,12 @@ export default function App() {
             <Route path="/lab" element={<LabPage />} />
             <Route path="/knowledge" element={<KnowledgePage />} />
             <Route path="/knowledge/:docId" element={<KnowledgePage />} />
+            <Route path="/guide" element={<GuidePage />} />
           </Routes>
         </main>
+        {chronicleOpen && (
+          <ChronicleOverlay onClose={() => setChronicleOpen(false)} />
+        )}
       </div>
     </BrowserRouter>
   );

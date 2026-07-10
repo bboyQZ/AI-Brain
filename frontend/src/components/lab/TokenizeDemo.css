@@ -17,6 +17,17 @@
   font-weight: 500;
 }
 
+.demo-sample-hint {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin: 0 0 4px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+}
+
 .demo-input {
   padding: 14px 16px;
   background: var(--bg-input);
@@ -104,8 +115,12 @@
 
 .token-piece {
   font-size: 14px;
-  font-family: var(--mono);
+  /* 等宽优先，中文回退到系统黑体，避免缺字变成方框问号 */
+  font-family: var(--mono), "Microsoft YaHei UI", "PingFang SC", "Noto Sans SC",
+    "Segoe UI Symbol", sans-serif;
   color: var(--text);
+  white-space: pre;
+  line-height: 1.2;
 }
 
 .token-id {

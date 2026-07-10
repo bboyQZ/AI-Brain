@@ -1,21 +1,27 @@
+from pathlib import Path
+
 from app.models.schemas import SourceRef
 from app.services.retriever import hybrid_retrieve
 from app.services.llm_client import get_llm
 from app.services.session_store import add_message
 
-PROMPT_TEMPLATE = """你是一个 AI 学习助手，根据以下课程资料回答用户问题。
+# 项目根目录 /prompts —— 改提示词只改这里的文本文件即可
+_PROMPTS_DIR = Path(__file__).resolve().parents[2] / "prompts"
+# filename -> (mtime_ns, content)；文件变更后自动重读，无需重启
+_PROMPT_CACHE: dict[str, tuple[int, str]] = {}
 
-【资料】
-{context}
 
-【规则】
-1. 只根据【资料】回答，不要编造资料里没有的内容
-2. 如果资料不足以回答，明确说"现有资料中没有这个内容"
-3. 回答时引用资料来源，格式：[引自：课程第X节 / 笔记：标题]
-4. 用中文回答，语言清晰，适合学习者理解
-
-【用户问题】
-{query}"""
+def _load_prompt(filename: str) -> str:
+    path = _PROMPTS_DIR / filename
+    if not path.is_file():
+        raise FileNotFoundError(f"提示词文件不存在: {path}")
+    mtime_ns = path.stat().st_mtime_ns
+    cached = _PROMPT_CACHE.get(filename)
+    if cached and cached[0] == mtime_ns:
+        return cached[1]
+    content = path.read_text(encoding="utf-8").strip()
+    _PROMPT_CACHE[filename] = (mtime_ns, content)
+    return content
 
 
 def build_context(results: list[dict]) -> str:
@@ -58,11 +64,11 @@ def rag_chat(session_id: int, query: str):
     """
     results = hybrid_retrieve(query, top_k=4)
     context = build_context(results)
-    prompt = PROMPT_TEMPLATE.format(context=context, query=query)
+    user_prompt = _load_prompt("rag_user.txt").format(context=context, query=query)
 
     messages = [
-        {"role": "system", "content": "你是一个 AI 学习助手。"},
-        {"role": "user", "content": prompt},
+        {"role": "system", "content": _load_prompt("rag_system.txt")},
+        {"role": "user", "content": user_prompt},
     ]
     llm = get_llm()
     stream = llm.chat(messages, stream=True)

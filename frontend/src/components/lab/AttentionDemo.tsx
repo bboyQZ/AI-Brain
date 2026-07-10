@@ -1,9 +1,18 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { api, type AttentionResponse } from "../../api/client";
+import { LAB_SAMPLE_LIMITS, takePrefix, truncateHint } from "../../utils/labSample";
 import "./AttentionDemo.css";
 
-export default function AttentionDemo() {
-  const [text, setText] = useState("苹果发布手机");
+type Props = {
+  sampleText?: string;
+};
+
+export default function AttentionDemo({ sampleText = "" }: Props) {
+  const slice = useMemo(
+    () => takePrefix(sampleText, LAB_SAMPLE_LIMITS.attentionChars),
+    [sampleText],
+  );
+  const text = slice.text;
   const [data, setData] = useState<AttentionResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [layer, setLayer] = useState(0);
@@ -13,7 +22,10 @@ export default function AttentionDemo() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const fetchAttention = useCallback(async () => {
-    if (!text.trim()) return;
+    if (!text.trim()) {
+      setData(null);
+      return;
+    }
     setLoading(true);
     try {
       const res = await api.attention(text);
@@ -29,8 +41,13 @@ export default function AttentionDemo() {
   }, [text]);
 
   useEffect(() => {
-    fetchAttention();
+    const t = window.setTimeout(() => {
+      void fetchAttention();
+    }, 300);
+    return () => window.clearTimeout(t);
   }, [fetchAttention]);
+
+  const limitHint = truncateHint(slice);
 
   const tokens = data?.tokens || [];
   const seqLen = tokens.length;
@@ -122,20 +139,21 @@ export default function AttentionDemo() {
 
   return (
     <div className="attention-demo">
-      <div className="demo-section">
-        <label className="demo-label">输入文本</label>
-        <div className="attn-input-row">
-          <textarea
-            className="demo-input"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="输入短句（建议 10 字以内）"
-            rows={1}
-          />
-          <button className="demo-btn" onClick={fetchAttention} disabled={loading}>
-            {loading ? "计算中..." : "分析"}
-          </button>
-        </div>
+      <p className="demo-sample-hint">
+        输入来自右侧共用「示例文本」
+        {limitHint
+          ? `。${limitHint}（注意力矩阵随长度平方增长）`
+          : "，修改后会自动重新分析。"}
+      </p>
+      {text.trim() && (
+        <p className="demo-sample-used">
+          本次分析：<code>{text}</code>
+        </p>
+      )}
+      <div className="attn-input-row">
+        <button type="button" className="demo-btn" onClick={fetchAttention} disabled={loading || !text.trim()}>
+          {loading ? "计算中..." : "重新分析"}
+        </button>
       </div>
 
       {data && (
