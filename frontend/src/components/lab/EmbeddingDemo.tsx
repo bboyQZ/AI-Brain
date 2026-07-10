@@ -11,6 +11,11 @@ interface Point {
 
 const DEFAULT_WORDS = "北京\n上海\n广州\n苹果\n香蕉\n西瓜\n手机\n电脑\n汽车";
 
+function readCssColor(varName: string, fallback: string): string {
+  const value = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  return value || fallback;
+}
+
 export default function EmbeddingDemo() {
   const [input, setInput] = useState(DEFAULT_WORDS);
   const [loading, setLoading] = useState(false);
@@ -53,7 +58,7 @@ export default function EmbeddingDemo() {
     if (!mount) return;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f0f13);
+    scene.background = new THREE.Color(readCssColor("--bg", "#ffffff"));
 
     const camera = new THREE.PerspectiveCamera(60, mount.clientWidth / mount.clientHeight, 0.1, 100);
     camera.position.set(5, 5, 5);
@@ -99,7 +104,7 @@ export default function EmbeddingDemo() {
           if (d > 0.5) discard;
           float core = 1.0 - smoothstep(0.0, 0.2, d);
           float halo = 1.0 - smoothstep(0.2, 0.5, d);
-          vec3 color = mix(vec3(0.49, 0.42, 1.0), vec3(1.0, 0.7, 0.5), vGlow);
+          vec3 color = mix(vec3(0.05, 0.65, 0.91), vec3(0.22, 0.74, 0.97), vGlow);
           float alpha = (core + halo * 0.3) * vAlpha;
           gl_FragColor = vec4(color, alpha);
         }
@@ -207,7 +212,17 @@ export default function EmbeddingDemo() {
     rendererRef.current = renderer;
     cameraRef.current = camera;
 
+    const syncBackground = () => {
+      scene.background = new THREE.Color(readCssColor("--bg", "#ffffff"));
+    };
+    const themeObserver = new MutationObserver(syncBackground);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
     return () => {
+      themeObserver.disconnect();
       cancelAnimationFrame(animId);
       renderer.domElement.removeEventListener("mousedown", onDown);
       window.removeEventListener("mouseup", onUp);
@@ -253,7 +268,7 @@ export default function EmbeddingDemo() {
       canvas.height = 64;
       const ctx = canvas.getContext("2d")!;
       ctx.font = "bold 28px sans-serif";
-      ctx.fillStyle = "rgba(232, 232, 240, 0.9)";
+      ctx.fillStyle = readCssColor("--text", "#0f172a");
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(p.text, 128, 32);

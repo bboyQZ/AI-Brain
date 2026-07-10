@@ -1,8 +1,8 @@
 .session-sidebar {
   width: 220px;
   flex-shrink: 0;
-  background: var(--bg-elevated);
-  border-right: 1px solid var(--border);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
   display: flex;
   flex-direction: column;
   padding: 12px 10px;
@@ -13,18 +13,18 @@
 .new-session-btn {
   padding: 10px 14px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg);
   color: var(--text);
   font-size: 14px;
   font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--accent-border);
   transition: all 0.2s;
 }
 
 .new-session-btn:hover {
-  background: rgba(124, 108, 255, 0.14);
-  border-color: rgba(124, 108, 255, 0.3);
-  color: var(--text);
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
 }
 
 .session-list {
@@ -65,11 +65,11 @@
 }
 
 .session-item:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-hover);
 }
 
 .session-item.active {
-  background: rgba(124, 108, 255, 0.1);
+  background: var(--accent-soft);
   border-color: transparent;
 }
 
@@ -131,6 +131,6 @@
 
 .session-delete-btn:hover {
   opacity: 1 !important;
-  color: #ff8a8a;
-  background: rgba(255, 80, 80, 0.12);
+  color: var(--danger);
+  background: var(--danger-bg);
 }

@@ -75,8 +75,8 @@
   align-items: center;
   padding: 4px 10px;
   border-radius: 6px;
-  background: rgba(124, 108, 255, 0.1);
-  border: 1px solid rgba(124, 108, 255, 0.2);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
   cursor: default;
   transition: all 0.15s;
   animation: chipIn 0.25s ease backwards;
@@ -89,10 +89,11 @@
 
 .token-chip:hover,
 .token-chip.hovered {
-  background: rgba(124, 108, 255, 0.3);
+  background: var(--accent-soft);
   border-color: var(--accent);
   box-shadow: 0 0 10px var(--accent-glow);
   transform: translateY(-2px);
+  filter: brightness(1.15);
 }
 
 .token-chip.dup {

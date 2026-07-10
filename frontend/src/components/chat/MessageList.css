@@ -30,7 +30,7 @@
 .welcome-icon {
   font-size: 56px;
   line-height: 1;
-  filter: drop-shadow(0 8px 24px rgba(124, 108, 255, 0.25));
+  filter: drop-shadow(0 8px 24px var(--accent-glow));
 }
 
 .welcome-title {
@@ -60,8 +60,8 @@
 .prompt-chip {
   padding: 10px 16px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--border);
   color: var(--text);
   font-size: 13px;
   transition: all 0.2s;
@@ -69,8 +69,8 @@
 }
 
 .prompt-chip:hover {
-  background: rgba(124, 108, 255, 0.14);
-  border-color: rgba(124, 108, 255, 0.35);
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
   color: var(--text);
   transform: translateY(-1px);
 }
@@ -115,15 +115,15 @@
   font-size: 13px;
   flex-shrink: 0;
   margin-top: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
   color: var(--text-dim);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface);
 }
 
 .message-avatar.user {
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(124, 108, 255, 0.45), rgba(90, 74, 220, 0.35));
-  border-color: rgba(124, 108, 255, 0.4);
+  background: var(--accent);
+  border-color: var(--accent-border);
   color: #fff;
   font-size: 12px;
   font-weight: 600;
@@ -131,8 +131,8 @@
 
 .message-avatar.assistant {
   font-size: 16px;
-  background: rgba(124, 108, 255, 0.1);
-  border-color: rgba(124, 108, 255, 0.2);
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
 }
 
 .message-content {
@@ -149,13 +149,13 @@
 }
 
 .message-bubble.user .message-content {
-  background: linear-gradient(135deg, rgba(124, 108, 255, 0.22), rgba(100, 86, 220, 0.18));
-  border: 1px solid rgba(124, 108, 255, 0.28);
+  background: var(--user-bubble);
+  border: 1px solid var(--accent-border);
   border-radius: 18px 18px 4px 18px;
 }
 
 .message-bubble.assistant .message-content {
-  background: transparent;
+  background: var(--assistant-bubble);
   border: none;
   padding: 4px 0 4px 2px;
   border-radius: 0;
@@ -172,8 +172,8 @@
   font-size: 0.88em;
   padding: 2px 6px;
   border-radius: 6px;
-  background: rgba(124, 108, 255, 0.12);
-  border: 1px solid rgba(124, 108, 255, 0.15);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
 }
 
 .message-content.markdown .source-tag {
@@ -183,8 +183,8 @@
   margin: 10px 0 4px;
   padding: 4px 10px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--border);
   color: var(--text-dim);
   font-size: 12px;
   line-height: 1.5;
@@ -193,8 +193,8 @@
 }
 
 .message-content.markdown .source-tag:hover {
-  background: rgba(124, 108, 255, 0.12);
-  border-color: rgba(124, 108, 255, 0.3);
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
   color: var(--text);
 }
 
@@ -205,7 +205,7 @@
   gap: 8px;
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--border);
 }
 
 .source-chips-label {
@@ -221,16 +221,16 @@
   max-width: 320px;
   padding: 4px 10px 4px 4px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--border);
   font-size: 12px;
   color: var(--text-dim);
   transition: all 0.15s;
 }
 
 .source-chip:hover {
-  background: rgba(124, 108, 255, 0.14);
-  border-color: rgba(124, 108, 255, 0.35);
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
   color: var(--text);
   transform: translateY(-1px);
 }
@@ -241,12 +241,16 @@
   border-radius: 999px;
   font-size: 11px;
   font-weight: 500;
-  background: rgba(124, 108, 255, 0.16);
-  color: #b8a4ff;
+  background: var(--accent-soft);
+  color: var(--badge-fg);
 }
 
 .source-chip-badge.note {
   background: rgba(94, 200, 160, 0.14);
+  color: #059669;
+}
+
+[data-theme="dark"] .source-chip-badge.note {
   color: #7fd8b4;
 }
 

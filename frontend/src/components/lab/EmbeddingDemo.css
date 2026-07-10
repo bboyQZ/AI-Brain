@@ -33,7 +33,7 @@
   top: 12px;
   left: 12px;
   padding: 6px 12px;
-  background: rgba(124, 108, 255, 0.2);
+  background: var(--accent-soft);
   border: 1px solid var(--accent);
   border-radius: 8px;
   font-size: 14px;

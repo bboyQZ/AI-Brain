@@ -59,18 +59,18 @@ export default function AttentionDemo() {
 
     for (let q = 0; q < seqLen; q++) {
       const yLabel = tokens[q];
-      ctx.fillStyle = q === activeQ ? "#7c6cff" : "#8a8a9a";
+      ctx.fillStyle = q === activeQ ? "#0ea5e9" : "#64748b";
       ctx.fillText(yLabel, 28, 60 + q * total + cellSize / 2);
 
       for (let k = 0; k < seqLen; k++) {
         if (q === 0) {
-          ctx.fillStyle = k === activeK ? "#7c6cff" : "#8a8a9a";
+          ctx.fillStyle = k === activeK ? "#0ea5e9" : "#64748b";
           ctx.fillText(tokens[k], 60 + k * total + cellSize / 2, 28);
         }
         const w = weights[q]?.[k] ?? 0;
-        const r = Math.round(124 + w * 131);
-        const g = Math.round(108 + w * 100);
-        const b = Math.round(255 - w * 100);
+        const r = Math.round(14 + w * 40);
+        const g = Math.round(165 - w * 40);
+        const b = Math.round(233 - w * 40);
         const alpha = lockedQ !== null && lockedQ !== q ? 0.15 : 1;
         ctx.fillStyle = `rgba(${r},${g},${b},${alpha * (0.15 + w * 0.85)})`;
 
@@ -82,7 +82,7 @@ export default function AttentionDemo() {
         ctx.fill();
 
         if (isActive) {
-          ctx.strokeStyle = "#7c6cff";
+          ctx.strokeStyle = "#0ea5e9";
           ctx.lineWidth = 2;
           ctx.stroke();
         }

@@ -1,17 +1,67 @@
-:root {
-  --bg: #0f0f13;
-  --bg-elevated: #1a1a22;
-  --bg-input: #16161e;
-  --border: #2a2a36;
-  --text: #e8e8f0;
-  --text-dim: #8a8a9a;
-  --accent: #7c6cff;
-  --accent-glow: rgba(124, 108, 255, 0.4);
-  --user-bubble: #2a2540;
-  --assistant-bubble: #1e1e28;
+:root,
+[data-theme="light"] {
+  --bg: #ffffff;
+  --bg-elevated: #f8fafc;
+  --bg-input: #ffffff;
+  --sidebar-bg: #f0f9ff;
+  --sidebar-border: #bae6fd;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-dim: #64748b;
+  --accent: #0ea5e9;
+  --accent-strong: #0284c7;
+  --accent-glow: rgba(14, 165, 233, 0.25);
+  --accent-soft: rgba(14, 165, 233, 0.12);
+  --accent-border: rgba(14, 165, 233, 0.35);
+  --surface: rgba(15, 23, 42, 0.03);
+  --surface-hover: rgba(15, 23, 42, 0.05);
+  --user-bubble: #e0f2fe;
+  --assistant-bubble: transparent;
+  --input-shell-bg: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.88) 36%,
+    rgba(255, 255, 255, 0.98) 100%
+  );
+  --input-card-bg: #ffffff;
+  --input-shadow: 0 2px 8px rgba(14, 165, 233, 0.08);
+  --badge-fg: #0369a1;
+  --danger: #e11d48;
+  --danger-bg: rgba(225, 29, 72, 0.1);
   --radius: 12px;
   --font: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
   --mono: "JetBrains Mono", "Cascadia Code", "Consolas", monospace;
+}
+
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --bg-elevated: #0f1b2d;
+  --bg-input: #111827;
+  --sidebar-bg: #0f1b2d;
+  --sidebar-border: #1e3a5f;
+  --border: #1e3a5f;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent: #0ea5e9;
+  --accent-strong: #38bdf8;
+  --accent-glow: rgba(14, 165, 233, 0.4);
+  --accent-soft: rgba(14, 165, 233, 0.2);
+  --accent-border: rgba(14, 165, 233, 0.4);
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-hover: rgba(255, 255, 255, 0.06);
+  --user-bubble: rgba(14, 165, 233, 0.22);
+  --assistant-bubble: transparent;
+  --input-shell-bg: linear-gradient(
+    180deg,
+    rgba(11, 18, 32, 0) 0%,
+    rgba(11, 18, 32, 0.88) 36%,
+    rgba(11, 18, 32, 0.98) 100%
+  );
+  --input-card-bg: rgba(17, 24, 39, 0.95);
+  --input-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --badge-fg: #7dd3fc;
+  --danger: #fb7185;
+  --danger-bg: rgba(251, 113, 133, 0.12);
 }
 
 * {
@@ -64,14 +114,13 @@ input, textarea {
 .brand {
   font-weight: 700;
   font-size: 16px;
-  background: linear-gradient(135deg, var(--accent), #b8a4ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--accent-strong);
 }
 
 .nav-links {
   display: flex;
   gap: 4px;
+  flex: 1;
 }
 
 .nav-link {
@@ -84,12 +133,29 @@ input, textarea {
 
 .nav-link:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-hover);
 }
 
 .nav-link.active {
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+}
+
+.theme-toggle {
+  margin-left: auto;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  transition: all 0.2s;
+}
+
+.theme-toggle:hover {
   color: var(--text);
-  background: rgba(124, 108, 255, 0.15);
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
 }
 
 .content {
