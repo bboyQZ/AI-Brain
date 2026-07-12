@@ -1,4 +1,4 @@
-# 本地一键启动：后端 + 前端（各开一个 PowerShell 窗口）
+﻿# 本地一键启动：后端 + 前端（各开一个 PowerShell 窗口）
 # 用法：
 #   Set-Location "D:\develop\AI-Brain"
 #   powershell -ExecutionPolicy Bypass -File ".\scripts\start-local.ps1"

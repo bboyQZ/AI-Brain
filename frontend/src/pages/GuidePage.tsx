@@ -16,10 +16,11 @@ import { api, type GuideSource } from "../api/client";
 import { GUIDE_FLOWS } from "../guide/flows";
 import { explainsFor } from "../guide/explains";
 import AnnotatedCode from "../guide/AnnotatedCode";
+import InteractionNode from "../guide/InteractionNode";
 import MethodNode, { type MethodNodeData } from "../guide/MethodNode";
 import "./GuidePage.css";
 
-const nodeTypes = { method: MethodNode };
+const nodeTypes = { method: MethodNode, interaction: InteractionNode };
 /** 疏朗布局；默认对准当前方块，需要整图时用左下角「适应」 */
 const POS_SCALE_X = 1.85;
 const POS_SCALE_Y = 2.05;
@@ -76,6 +77,28 @@ function FlowCanvas({
     () =>
       flow.nodes.map((n) => {
         const ex = explainsFor(n.id);
+        const isInteraction = n.kind === "interaction";
+        const related = n.relatedCodeId
+          ? flow.nodes.find((x) => x.id === n.relatedCodeId)
+          : undefined;
+        if (isInteraction) {
+          return {
+            id: n.id,
+            type: "interaction",
+            position: {
+              x: n.position.x * POS_SCALE_X,
+              y: n.position.y * POS_SCALE_Y,
+            },
+            data: {
+              label: n.label,
+              blurb: ex.blurb || n.note,
+              step: n.step,
+              relatedCodeId: n.relatedCodeId,
+              relatedCodeLabel: related?.label,
+              onJump,
+            },
+          };
+        }
         return {
           id: n.id,
           type: "method",
@@ -85,7 +108,7 @@ function FlowCanvas({
           },
           data: {
             label: n.label,
-            file: n.file,
+            file: n.file ?? "",
             symbol: n.symbol,
             blurb: ex.blurb || n.note,
             jumpTargets: jumpMap[n.id] || [],
@@ -108,7 +131,7 @@ function FlowCanvas({
           targetHandle: e.targetHandle ?? "in",
           label: e.label,
           type: "smoothstep",
-          animated: true,
+          animated: false,
           markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18 },
           style: { stroke: "var(--accent)", strokeWidth: 2.25 },
           labelStyle: { fill: "var(--text)", fontSize: 12, fontWeight: 600 },
@@ -175,14 +198,17 @@ export default function GuidePage() {
 
   const selectedNode = flow.nodes.find((n) => n.id === selectedId) ?? null;
   const selectedExplain = selectedId ? explainsFor(selectedId) : { blurb: "", lines: [] };
+  const isInteraction = selectedNode?.kind === "interaction";
 
   useEffect(() => {
     setSelectedId(flow.nodes[0]?.id ?? null);
   }, [flowId, flow.nodes]);
 
   useEffect(() => {
-    if (!selectedNode) {
+    if (!selectedNode || isInteraction || !selectedNode.file) {
       setSource(null);
+      setLoading(false);
+      setError(null);
       return;
     }
     let cancelled = false;
@@ -205,13 +231,15 @@ export default function GuidePage() {
     return () => {
       cancelled = true;
     };
-  }, [selectedNode]);
+  }, [selectedNode, isInteraction]);
 
   return (
     <div className="guide-page">
       <aside className="guide-sidebar">
         <div className="guide-sidebar-title">源码导读</div>
-        <p className="guide-sidebar-hint">点方块对准视角 · 右栏看源码讲解 · 左下可适应整图</p>
+        <p className="guide-sidebar-hint">
+          橙色 = 用户操作 · 蓝色 = 代码 · 箭头按时间顺序 · 点方块看讲解
+        </p>
         <nav className="guide-nav">
           {GUIDE_FLOWS.map((f) => (
             <button
@@ -243,13 +271,16 @@ export default function GuidePage() {
           <div className="guide-code-header">
             <div>
               <div className="guide-code-title">
-                {selectedNode?.label || "选择一个方法方块"}
+                {selectedNode?.label || "选择一个方块"}
               </div>
-              {selectedNode && (
+              {selectedNode && !isInteraction && selectedNode.file && (
                 <div className="guide-code-path">
                   {selectedNode.file}
                   {selectedNode.symbol ? ` · ${selectedNode.symbol}` : ""}
                 </div>
+              )}
+              {isInteraction && (
+                <div className="guide-code-path interaction-tag">交互步骤 · 无源码文件</div>
               )}
             </div>
           </div>
@@ -259,9 +290,29 @@ export default function GuidePage() {
           {selectedNode?.note && selectedNode.note !== selectedExplain.blurb && (
             <p className="guide-code-note subtle">{selectedNode.note}</p>
           )}
-          {loading && <p className="guide-code-status">加载源码中…</p>}
-          {error && <p className="guide-code-error">{error}</p>}
-          {!loading && source && (
+          {isInteraction && selectedExplain.lines.length > 0 && (
+            <ol className="guide-interaction-steps">
+              {selectedExplain.lines.map((line, i) => (
+                <li key={`${line.line}-${i}`}>{line.text}</li>
+              ))}
+            </ol>
+          )}
+          {isInteraction && selectedNode?.relatedCodeId && (
+            <button
+              type="button"
+              className="guide-related-code-btn"
+              onClick={() => {
+                const id = selectedNode.relatedCodeId!;
+                setSelectedId(id);
+              }}
+            >
+              查看对应代码 →{" "}
+              {flow.nodes.find((n) => n.id === selectedNode.relatedCodeId)?.label}
+            </button>
+          )}
+          {!isInteraction && loading && <p className="guide-code-status">加载源码中…</p>}
+          {!isInteraction && error && <p className="guide-code-error">{error}</p>}
+          {!isInteraction && !loading && source && (
             <AnnotatedCode code={source.code} explains={selectedExplain.lines} />
           )}
         </section>

@@ -31,3 +31,17 @@ powershell -ExecutionPolicy Bypass -File ".\scripts\start-local.ps1"
 ```
 
 需要根目录已有 `.env`（可从 `.env.example` 复制）。
+
+## 人物纪事肖像管线
+
+在 `frontend/` 下处理 `public/chronicle/portraits/` 原图：
+
+```powershell
+Set-Location "D:\develop\AI-Brain\frontend"
+npm run portraits-pipeline
+```
+
+- `optimize_chronicle_portraits.mjs` → `display/` + `thumbs/`
+- `enhance_chronicle_portraits.mjs` → `enhanced/`（2× 锐化；有 Real-ESRGAN 时优先 AI）
+
+详见 `.cursor/rules/chronicle-portrait-pipeline.mdc`。

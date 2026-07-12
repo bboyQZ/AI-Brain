@@ -5,6 +5,126 @@ export const NODE_EXPLAIN: Record<
   string,
   { blurb: string; lines: LineExplain[] }
 > = {
+  ix_send: {
+    blurb: "整条对话链路的起点：用户在聊天页点发送。",
+    lines: [
+      { line: 1, text: "输入框里有字，且 AI 当前没在回复（sending=false）。" },
+      { line: 2, text: "也可以按 Enter 发送；空内容或正在回复时按钮无效。" },
+      { line: 3, text: "接下来由前端 handleSend 接管：检查会话、落库、开流。" },
+    ],
+  },
+  ix_bubbles: {
+    blurb: "用户消息已保存，界面立刻有反馈，不用等 AI 说完。",
+    lines: [
+      { line: 1, text: "侧栏会话列表刷新（新会话会出现，旧会话排序可能变）。" },
+      { line: 2, text: "聊天区追加用户气泡（刚发的那句话）。" },
+      { line: 3, text: "同时放一个空的 AI 气泡，准备接收流式文字。" },
+      { line: 4, text: "输入框进入「发送中」禁用状态，防止连点。" },
+    ],
+  },
+  ix_stream: {
+    blurb: "后端通过 SSE 一段段推字，前端边收边画。",
+    lines: [
+      { line: 1, text: "streamChat 读到 data: {...} 行，解析出 delta 字段。" },
+      { line: 2, text: "每来一小段就追加到 AI 气泡末尾，用户看到「打字机」效果。" },
+      { line: 3, text: "第一包里可能带上 sources（引用来源），挂在消息下方。" },
+    ],
+  },
+  ix_done: {
+    blurb: "流结束，界面恢复可输入状态。",
+    lines: [
+      { line: 1, text: "收到 [DONE] 或流正常关闭，sending 设回 false。" },
+      { line: 2, text: "输入框重新可编辑；完整回答已在后端落库。" },
+      { line: 3, text: "若有引用，可点击「引自：…」跳转知识文档。" },
+    ],
+  },
+  ix_run_script: {
+    blurb: "开发者主动把课程/笔记灌进检索库。",
+    lines: [
+      { line: 1, text: "在项目根目录执行 python scripts/ingest.py。" },
+      { line: 2, text: "大面积改文档或改切片逻辑后，建议加 --reset 全量重建。" },
+      { line: 3, text: "脚本入口 main() 会调用 run_ingest()。" },
+    ],
+  },
+  ix_auto_start: {
+    blurb: "不用手动跑脚本时，后端自己检测知识有没有变。",
+    lines: [
+      { line: 1, text: ".env 里 AUTO_INGEST_ON_STARTUP=true（默认）时生效。" },
+      { line: 2, text: "启动时比对 curriculum/、knowledge/ 指纹，有变就全量入库。" },
+      { line: 3, text: "和手动脚本最终都汇入 run_ingest()。" },
+    ],
+  },
+  ix_ready: {
+    blurb: "入库完成后的「用户可感知」结果。",
+    lines: [
+      { line: 1, text: "向量库有条目，BM25 索引也建好。" },
+      { line: 2, text: "之后在 Chat 提问，hybrid_retrieve 能搜到新课程内容。" },
+      { line: 3, text: "不必重启前端；后端检索库已更新。" },
+    ],
+  },
+  ix_open_lab: {
+    blurb: "从顶栏进入概念实验室页面。",
+    lines: [
+      { line: 1, text: "路由切到 /lab，LabPage 挂载。" },
+      { line: 2, text: "右侧富文本是各 Tab 共用的示例输入。" },
+    ],
+  },
+  ix_switch_tab: {
+    blurb: "用户切换 Tokenize / Attention / Embedding / RAG 等演示。",
+    lines: [
+      { line: 1, text: "LabPage 根据 tab state 渲染不同 Demo 组件。" },
+      { line: 2, text: "示例文本不变，各演示按自己的规则截取/处理。" },
+    ],
+  },
+  ix_rag_click: {
+    blurb: "用户在 RAG Tab 点「执行切块」或「检索 Top 3」。",
+    lines: [
+      { line: 1, text: "RagDemo 读取右侧示例文本（可截断到性能上限）。" },
+      { line: 2, text: "切块走 chunk_text_simple；检索走 lab_retrieve（简化版，非正式 Chat）。" },
+    ],
+  },
+  ix_embed_click: {
+    blurb: "用户在 Embedding Tab 点「生成 3D 向量空间」。",
+    lines: [
+      { line: 1, text: "把示例文本按行拆成多个词/短语。" },
+      { line: 2, text: "请求后端算 embedding，PCA 降到 3 维后画点云。" },
+    ],
+  },
+  ix_show_result: {
+    blurb: "演示结果回到界面，方便肉眼观察。",
+    lines: [
+      { line: 1, text: "RAG：展示切块列表或 Top 命中片段。" },
+      { line: 2, text: "Embedding：3D 散点图，语义相近的词靠得更近。" },
+    ],
+  },
+  ix_load_app: {
+    blurb: "用户第一次在浏览器打开本站。",
+    lines: [
+      { line: 1, text: "加载 Vite 打包的前端资源，React 挂载到 #root。" },
+      { line: 2, text: "App 组件提供顶栏导航和 React Router 路由出口。" },
+    ],
+  },
+  ix_nav_chat: {
+    blurb: "用户点击顶栏「对话」或访问首页 /。",
+    lines: [
+      { line: 1, text: "路由渲染 ChatPage：侧栏 + 消息区 + 输入框。" },
+      { line: 2, text: "useSession 在挂载时拉取会话列表。" },
+    ],
+  },
+  ix_nav_guide: {
+    blurb: "用户点击顶栏「源码导读」。",
+    lines: [
+      { line: 1, text: "路由渲染 GuidePage（就是当前页）。" },
+      { line: 2, text: "左侧选流程，中间看图，右侧看讲解/源码。" },
+    ],
+  },
+  ix_pick_session: {
+    blurb: "用户在对话页侧栏点击某个历史会话。",
+    lines: [
+      { line: 1, text: "useSession 把 currentId 设为该会话。" },
+      { line: 2, text: "请求 GET /sessions/{id} 拉取消息列表并渲染。" },
+    ],
+  },
   handleSend: {
     blurb: "这是聊天页面。你点「发送」后，主要逻辑在下面的 handleSend 里。",
     lines: [
@@ -198,7 +318,7 @@ export const NODE_EXPLAIN: Record<
 export function explainsFor(nodeId: string): { blurb: string; lines: LineExplain[] } {
   return (
     NODE_EXPLAIN[nodeId] ?? {
-      blurb: "点这个方块可以看对应源码；细讲解还没写。",
+      blurb: "点这个方块可以看说明；代码方块还可对照右侧源码。",
       lines: [],
     }
   );

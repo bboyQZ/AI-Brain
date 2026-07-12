@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chronicle 强调色对比</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #05060d;
+      color: #e2e8f0;
+      padding: 28px;
+    }
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #fff7ed;
+    }
+    .sub {
+      font-size: 13px;
+      color: rgba(180, 195, 230, 0.62);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .scheme {
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .scheme-label {
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .scheme-desc {
+      padding: 8px 14px 12px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: rgba(180, 195, 230, 0.55);
+      background: rgba(0,0,0,0.2);
+    }
+    .dock {
+      display: flex;
+      min-height: 200px;
+      background: rgba(6, 8, 20, 0.94);
+      backdrop-filter: blur(14px);
+    }
+    .photo {
+      flex: 0 0 130px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+    }
+    .photo-frame {
+      width: 100%;
+      height: 120px;
+      border-radius: 10px;
+      background: rgba(10, 16, 36, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-size: 11px;
+      color: rgba(180,195,230,0.4);
+    }
+    .nav-btn {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(6, 8, 20, 0.72);
+    }
+    .nav-prev { left: 4px; }
+    .nav-next { right: 4px; }
+    .thumb-row { display: flex; gap: 4px; }
+    .thumb {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 2px solid transparent;
+    }
+    .thumb.active { }
+    .main {
+      flex: 1;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .name { font-size: 16px; font-weight: 600; color: #fff7ed; }
+    .dept { font-size: 12px; }
+    .sec-title { font-size: 11px; letter-spacing: 0.2em; margin-top: 4px; }
+    .body { font-size: 12px; line-height: 1.6; color: #e2e8f0; }
+    .pills { display: flex; gap: 6px; margin-top: 2px; }
+    .pill {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid;
+    }
+    .cta {
+      margin-top: auto;
+      align-self: flex-start;
+      padding: 8px 14px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      border-radius: 8px;
+      border: 1px solid;
+      cursor: default;
+    }
+    .rec { outline: 2px solid rgba(148, 163, 255, 0.5); outline-offset: 2px; }
+    .rec .scheme-label::after { content: " · 推荐"; color: #b4c5ff; }
+
+    /* A 冷色星辉 */
+    .a .dock { border: 1px solid rgba(148, 163, 255, 0.28); }
+    .a .photo { border-right: 1px solid rgba(148, 163, 255, 0.14); background: rgba(12, 18, 40, 0.55); }
+    .a .photo-frame { border: 1px solid rgba(148, 163, 255, 0.18); }
+    .a .nav-btn { border: 1px solid rgba(148, 163, 255, 0.35); color: #b4c5ff; }
+    .a .thumb.active { border-color: rgba(148, 163, 255, 0.65); }
+    .a .dept { color: rgba(180, 200, 255, 0.75); }
+    .a .sec-title { color: rgba(148, 163, 255, 0.72); }
+    .a .pill { color: #b4c5ff; background: rgba(100, 140, 255, 0.12); border-color: rgba(148, 163, 255, 0.35); }
+    .a .cta { color: #dce8ff; background: rgba(22, 32, 58, 0.72); border-color: rgba(148, 163, 255, 0.42); }
+
+    /* B 月光银 */
+    .b .dock { border: 1px solid rgba(255, 255, 255, 0.14); }
+    .b .photo { border-right: 1px solid rgba(255, 255, 255, 0.08); background: rgba(12, 14, 22, 0.55); }
+    .b .photo-frame { border: 1px solid rgba(255, 255, 255, 0.1); }
+    .b .nav-btn { border: 1px solid rgba(255, 255, 255, 0.2); color: #c8d0e0; }
+    .b .thumb.active { border-color: rgba(255, 255, 255, 0.45); }
+    .b .dept { color: rgba(200, 210, 230, 0.65); }
+    .b .sec-title { color: rgba(200, 210, 230, 0.55); }
+    .b .pill { color: #d0d8e8; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.18); }
+    .b .cta { color: #e8ecf4; background: transparent; border-color: rgba(255, 255, 255, 0.28); }
+
+    /* C 星雾紫 */
+    .c .dock { border: 1px solid rgba(167, 139, 250, 0.22); }
+    .c .photo { border-right: 1px solid rgba(167, 139, 250, 0.12); background: rgba(18, 14, 32, 0.55); }
+    .c .photo-frame { border: 1px solid rgba(167, 139, 250, 0.18); }
+    .c .nav-btn { border: 1px solid rgba(167, 139, 250, 0.35); color: #c4b5fd; }
+    .c .thumb.active { border-color: rgba(167, 139, 250, 0.6); }
+    .c .dept { color: rgba(196, 181, 253, 0.75); }
+    .c .sec-title { color: rgba(167, 139, 250, 0.75); }
+    .c .pill { color: #c4b5fd; background: rgba(167, 139, 250, 0.12); border-color: rgba(167, 139, 250, 0.32); }
+    .c .cta { color: #e4dff8; background: rgba(35, 28, 58, 0.72); border-color: rgba(167, 139, 250, 0.4); }
+
+    /* D 极简无彩 */
+    .d .dock { border: 1px solid rgba(255, 255, 255, 0.1); }
+    .d .photo { border-right: 1px solid rgba(255, 255, 255, 0.06); background: rgba(8, 10, 18, 0.5); }
+    .d .photo-frame { border: 1px solid rgba(255, 255, 255, 0.08); }
+    .d .nav-btn { border: 1px solid rgba(255,255,255,0.15); color: rgba(226,232,240,0.7); }
+    .d .thumb.active { border-color: rgba(255,255,255,0.35); }
+    .d .dept { color: rgba(226,232,240,0.55); }
+    .d .sec-title { color: rgba(226,232,240,0.42); }
+    .d .pill { color: rgba(226,232,240,0.6); background: transparent; border-color: rgba(255,255,255,0.14); }
+    .d .cta { color: #e2e8f0; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.2); }
+
+    /* E 现状 屎黄 */
+    .e .dock { border: 1px solid rgba(245, 200, 66, 0.28); }
+    .e .photo { border-right: 1px solid rgba(245, 200, 66, 0.18); background: rgba(245, 200, 66, 0.04); }
+    .e .photo-frame { border: 1px solid rgba(245, 200, 66, 0.18); }
+    .e .nav-btn { border: 1px solid rgba(245, 200, 66, 0.35); color: #f5c842; }
+    .e .thumb.active { border-color: rgba(245, 200, 66, 0.75); }
+    .e .dept { color: rgba(245, 200, 66, 0.85); }
+    .e .sec-title { color: rgba(245, 200, 66, 0.72); }
+    .e .pill { color: #f5c842; background: rgba(245, 200, 66, 0.12); border-color: rgba(245, 200, 66, 0.35); }
+    .e .cta { color: #dce8ff; background: rgba(22, 32, 58, 0.72); border-color: rgba(148, 163, 255, 0.42); }
+  </style>
+</head>
+<body>
+  <h1>恋爱线 · dock 强调色方案对比</h1>
+  <p class="sub">对比范围：dock 边框、章节标签、关系 pill、照片切换箭头/缩略图描边、CTA 按钮。<br>正文阅读井（暖米色）不在此列，各方案共用。</p>
+  <div class="grid">
+    <div class="scheme a rec">
+      <div class="scheme-label">A · 冷色星辉</div>
+      <div class="dock">
+        <div class="photo">
+          <div class="photo-frame">照片<span class="nav-btn nav-prev">‹</span><span class="nav-btn nav-next">›</span></div>
+          <div class="thumb-row"><div class="thumb active"></div><div class="thumb"></div></div>
+        </div>
+        <div class="main">
+          <div class="name">张迪</div>
+          <div class="dept">恋爱体验馆</div>
+          <div class="sec-title">与乔志</div>
+          <div class="body">乔志大学同学。大一一见倾心却四年不敢表白……</div>
+          <div class="pills"><span class="pill">恋人</span><span class="pill">现任</span></div>
+          <button class="cta">阅读完整故事 →</button>
+        </div>
+      </div>
+      <div class="scheme-desc">淡蓝描边 + 星辉字色。与 3D 星图冷色最搭，推荐。</div>
+    </div>
+    <div class="scheme b">
+      <div class="scheme-label">B · 月光银</div>
+      <div class="dock">
+        <div class="photo">
+          <div class="photo-frame">照片<span class="nav-btn nav-prev">‹</span><span class="nav-btn nav-next">›</span></div>
+          <div class="thumb-row"><div class="thumb active"></div><div class="thumb"></div></div>
+        </div>
+        <div class="main">
+          <div class="name">张迪</div>
+          <div class="dept">恋爱体验馆</div>
+          <div class="sec-title">与乔志</div>
+          <div class="body">乔志大学同学。大一一见倾心却四年不敢表白……</div>
+          <div class="pills"><span class="pill">恋人</span><span class="pill">现任</span></div>
+          <button class="cta">阅读完整故事 →</button>
+        </div>
+      </div>
+      <div class="scheme-desc">几乎无彩色，白/灰描边。最克制，星图感强但层次略平。</div>
+    </div>
+    <div class="scheme c">
+      <div class="scheme-label">C · 星雾紫</div>
+      <div class="dock">
+        <div class="photo">
+          <div class="photo-frame">照片<span class="nav-btn nav-prev">‹</span><span class="nav-btn nav-next">›</span></div>
+          <div class="thumb-row"><div class="thumb active"></div><div class="thumb"></div></div>
+        </div>
+        <div class="main">
+          <div class="name">张迪</div>
+          <div class="dept">恋爱体验馆</div>
+          <div class="sec-title">与乔志</div>
+          <div class="body">乔志大学同学。大一一见倾心却四年不敢表白……</div>
+          <div class="pills"><span class="pill">恋人</span><span class="pill">现任</span></div>
+          <button class="cta">阅读完整故事 →</button>
+        </div>
+      </div>
+      <div class="scheme-desc">淡紫雾光。偏梦幻，和星图也协调，但比 A 更「二次元」。</div>
+    </div>
+    <div class="scheme d">
+      <div class="scheme-label">D · 极简无彩</div>
+      <div class="dock">
+        <div class="photo">
+          <div class="photo-frame">照片<span class="nav-btn nav-prev">‹</span><span class="nav-btn nav-next">›</span></div>
+          <div class="thumb-row"><div class="thumb active"></div><div class="thumb"></div></div>
+        </div>
+        <div class="main">
+          <div class="name">张迪</div>
+          <div class="dept">恋爱体验馆</div>
+          <div class="sec-title">与乔志</div>
+          <div class="body">乔志大学同学。大一一见倾心却四年不敢表白……</div>
+          <div class="pills"><span class="pill">恋人</span><span class="pill">现任</span></div>
+          <button class="cta">阅读完整故事 →</button>
+        </div>
+      </div>
+      <div class="scheme-desc">只用透明度区分层级，零色相。干净，但 dock 和星图背景对比度最弱。</div>
+    </div>
+    <div class="scheme e" style="grid-column: 1 / -1; max-width: 50%;">
+      <div class="scheme-label">E · 现状（屎黄，对照组）</div>
+      <div class="dock">
+        <div class="photo">
+          <div class="photo-frame">照片<span class="nav-btn nav-prev">‹</span><span class="nav-btn nav-next">›</span></div>
+          <div class="thumb-row"><div class="thumb active"></div><div class="thumb"></div></div>
+        </div>
+        <div class="main">
+          <div class="name">张迪</div>
+          <div class="dept">恋爱体验馆</div>
+          <div class="sec-title">与乔志</div>
+          <div class="body">乔志大学同学。大一一见倾心却四年不敢表白……</div>
+          <div class="pills"><span class="pill">恋人</span><span class="pill">现任</span></div>
+          <button class="cta">阅读完整故事 →</button>
+        </div>
+      </div>
+      <div class="scheme-desc">当前 dock 仍残留的金色元素（边框/标签/箭头）。CTA 已改蓝，但其它仍是黄。</div>
+    </div>
+  </div>
+</body>
+</html>

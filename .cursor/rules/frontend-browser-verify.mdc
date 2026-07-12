@@ -1,0 +1,49 @@
+---
+description: 前端视觉/交互改动完成后必须在浏览器中自验，通过后再向用户汇报
+alwaysApply: true
+---
+
+# 前端浏览器自验
+
+## 何时必须执行
+
+完成**前端 UI / 样式 / 3D / Canvas / 动效**相关改动后，在向用户说「完成」「已修复」「请刷新验收」之前，**必须先在本机浏览器中打开页面看过实际效果**。
+
+仅 `npm run build` / `tsc` **不能**代替浏览器自验。
+
+## 自验步骤（按顺序）
+
+1. **启动前端**（后端按需）：
+   ```powershell
+   Set-Location "D:\develop\AI-Brain\frontend"
+   npm run dev
+   ```
+2. **打开目标页面**：
+   - 常规页面：`http://localhost:5173/...`
+   - Chronicle 公司大楼（开发直达）：`http://localhost:5173/?chronicle=org`
+3. **肉眼检查**：布局是否重叠、文字是否挤在一起、选中/默认态是否符合预期；3D 场景需等待 Canvas 加载完成（约 3–5 秒）。
+4. **有问题则继续改**，改完重复 2–3，直到自验通过。
+5. **汇报时写明**：已浏览器自验 + 看了哪些 URL/状态。
+
+## 无法用 GUI 浏览器时
+
+可用 Playwright 截图兜底，但仍需查看截图内容：
+
+```powershell
+npx --yes playwright@1.50.0 install chromium
+npx --yes playwright@1.50.0 screenshot "http://localhost:5173/?chronicle=org" ".cursor/verify-screenshot.png" --wait-for-timeout 6000 --viewport-size "1440,900"
+```
+
+截图后**必须 Read 该图片**，确认无重叠/乱码/白屏，再向用户汇报。
+
+截图 Read 检查通过后，**立即删除** `.cursor/verify-*.png`；勿提交 git；勿删除 `public/` 等资源目录中的 PNG。
+
+## 禁止
+
+- ❌ 只改代码 + build 通过就声称「已修好」
+- ❌ 未打开页面就让用户「刷新验收」
+- ❌ 把 lint/build 成功当作视觉验收
+
+## 与导读的关系
+
+纯前端视觉改动**不更新** `flows.ts` / `explains.ts`（见 `source-guide-sync`）。
