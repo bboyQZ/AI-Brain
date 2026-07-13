@@ -6,10 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "optimize-portraits": "node scripts/optimize_chronicle_portraits.mjs",
-    "enhance-portraits": "node scripts/enhance_chronicle_portraits.mjs",
-    "portraits-pipeline": "npm run optimize-portraits && npm run enhance-portraits"
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

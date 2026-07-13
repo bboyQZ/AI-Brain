@@ -19,8 +19,7 @@ alwaysApply: true
    npm run dev
    ```
 2. **打开目标页面**：
-   - 常规页面：`http://localhost:5173/...`
-   - Chronicle 公司大楼（开发直达）：`http://localhost:5173/?chronicle=org`
+   - 常规页面：`http://localhost:5173/...`（如 `/`、`/lab`、`/knowledge`、`/guide`）
 3. **肉眼检查**：布局是否重叠、文字是否挤在一起、选中/默认态是否符合预期；3D 场景需等待 Canvas 加载完成（约 3–5 秒）。
 4. **有问题则继续改**，改完重复 2–3，直到自验通过。
 5. **汇报时写明**：已浏览器自验 + 看了哪些 URL/状态。
@@ -31,7 +30,7 @@ alwaysApply: true
 
 ```powershell
 npx --yes playwright@1.50.0 install chromium
-npx --yes playwright@1.50.0 screenshot "http://localhost:5173/?chronicle=org" ".cursor/verify-screenshot.png" --wait-for-timeout 6000 --viewport-size "1440,900"
+npx --yes playwright@1.50.0 screenshot "http://localhost:5173/guide" ".cursor/verify-screenshot.png" --wait-for-timeout 6000 --viewport-size "1440,900"
 ```
 
 截图后**必须 Read 该图片**，确认无重叠/乱码/白屏，再向用户汇报。

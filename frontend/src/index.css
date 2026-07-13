@@ -143,40 +143,8 @@ input, textarea {
   background: var(--accent-soft);
 }
 
-/* PRIVATE chronicle：主题按钮左侧隐形热区 */
-.chronicle-hotzone {
-  margin-left: auto;
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: default;
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-}
-
-@media (pointer: coarse) {
-  .chronicle-hotzone {
-    width: 44px;
-    height: 44px;
-    margin-right: -8px;
-  }
-}
-
-.chronicle-hotzone:hover,
-.chronicle-hotzone:focus,
-.chronicle-hotzone:active {
-  background: transparent;
-  border: none;
-  outline: none;
-  cursor: default;
-}
-
 .theme-toggle {
+  margin-left: auto;
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 13px;
