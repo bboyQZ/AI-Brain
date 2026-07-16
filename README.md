@@ -34,6 +34,8 @@
 | 课次 | 主题 | 文档 |
 |------|------|------|
 | 8 | Prompt 为什么能够控制 AI？ | [curriculum/lesson-08-prompt-context.md](curriculum/lesson-08-prompt-context.md) |
+| 9 | Function Calling 与 MCP | [curriculum/lesson-09-function-calling-and-mcp.md](curriculum/lesson-09-function-calling-and-mcp.md) |
+| 10 | Agent Loop 与 ReAct | [curriculum/lesson-10-agent-loop-react.md](curriculum/lesson-10-agent-loop-react.md) |
 
 ## 本地开发
 
@@ -160,4 +162,6 @@ python ".\examples\lesson04_attention.py"
 python ".\examples\lesson05_workflow.py"
 python ".\examples\lesson06_rag_intro.py"
 python ".\examples\lesson07_rag_chunk.py"
+python ".\examples\lesson09_function_calling.py"
+python ".\examples\lesson10_react_loop.py"
 ```

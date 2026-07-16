@@ -4,16 +4,20 @@ import TokenizeDemo from "../components/lab/TokenizeDemo";
 import AttentionDemo from "../components/lab/AttentionDemo";
 import EmbeddingDemo from "../components/lab/EmbeddingDemo";
 import RagDemo from "../components/lab/RagDemo";
+import FunctionCallingDemo from "../components/lab/FunctionCallingDemo";
+import ReActLoopDemo from "../components/lab/ReActLoopDemo";
 import LabRichText from "../components/lab/LabRichText";
 import "./LabPage.css";
 
-type Tab = "tokenize" | "attention" | "embedding" | "rag" | "architecture";
+type Tab = "tokenize" | "attention" | "embedding" | "rag" | "function-calling" | "react-loop" | "architecture";
 
 const TABS: { key: Tab; label: string; desc: string }[] = [
   { key: "tokenize", label: "Tokenize", desc: "看文本如何被切成 Token" },
   { key: "attention", label: "Attention", desc: "看注意力权重如何连接 Token" },
   { key: "embedding", label: "Embedding", desc: "看语义如何映射到向量空间" },
   { key: "rag", label: "RAG", desc: "Chunk 切块 + 向量库检索（Lesson 6～7）" },
+  { key: "function-calling", label: "Function Calling", desc: "LLM 不执行代码，只输出 JSON（Lesson 9）" },
+  { key: "react-loop", label: "ReAct Loop", desc: "Reason → Act → Observe 真实循环（Lesson 10）" },
   { key: "architecture", label: "Architecture", desc: "跳到源码导读：方法方块 + 真代码" },
 ];
 
@@ -48,6 +52,8 @@ export default function LabPage() {
             {tab === "attention" && <AttentionDemo sampleText={sampleText} />}
             {tab === "embedding" && <EmbeddingDemo sampleText={sampleText} />}
             {tab === "rag" && <RagDemo sampleText={sampleText} />}
+            {tab === "function-calling" && <FunctionCallingDemo sampleText={sampleText} />}
+            {tab === "react-loop" && <ReActLoopDemo sampleText={sampleText} />}
             {tab === "architecture" && (
               <div className="lab-architecture">
                 <p className="lab-architecture-text">

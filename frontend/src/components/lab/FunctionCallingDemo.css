@@ -1,0 +1,258 @@
+@import "./TokenizeDemo.css";
+
+.fc-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1100px;
+}
+
+.fc-hint {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.fc-tools-spec {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: 13px;
+}
+
+.fc-tools-spec summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 600;
+  user-select: none;
+  margin-bottom: 8px;
+}
+
+.fc-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.fc-tool-card {
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fc-tool-name {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.fc-tool-desc {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.fc-tool-params {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+}
+
+.fc-round {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fc-round-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  align-self: flex-start;
+}
+
+.fc-tag-user {
+  background: rgba(108, 156, 255, 0.15);
+  color: #6c9cff;
+}
+
+.fc-tag-llm {
+  background: rgba(160, 120, 240, 0.15);
+  color: #b289f0;
+}
+
+.fc-tag-tool {
+  background: rgba(109, 212, 160, 0.15);
+  color: #6dd4a0;
+}
+
+.fc-round-text {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.fc-round-text code {
+  font-family: var(--mono);
+  color: var(--accent);
+  background: var(--bg);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.fc-question {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.fc-question:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.fc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fc-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: opacity 0.15s ease, transform 0.05s ease;
+  font-family: inherit;
+}
+
+.fc-btn:active {
+  transform: translateY(1px);
+}
+
+.fc-btn.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.fc-btn.primary:hover {
+  opacity: 0.9;
+}
+
+.fc-btn.ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border-color: var(--border);
+}
+
+.fc-btn.ghost:hover {
+  color: var(--text);
+  border-color: var(--text-dim);
+}
+
+.fc-json {
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+}
+
+.fc-json-refusal {
+  border-color: rgba(240, 160, 96, 0.4);
+  color: #f0a060;
+}
+
+.fc-json-result {
+  border-color: rgba(109, 212, 160, 0.4);
+  color: #6dd4a0;
+}
+
+.fc-final {
+  padding: 12px 14px;
+  background: var(--bg);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.fc-flow-summary {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.fc-flow-summary code {
+  font-family: var(--mono);
+  color: var(--accent);
+  font-size: 11.5px;
+}
+
+.fc-error {
+  padding: 10px 12px;
+  background: rgba(240, 96, 96, 0.08);
+  border: 1px solid rgba(240, 96, 96, 0.3);
+  border-radius: 8px;
+  color: #f06060;
+  font-size: 13px;
+}
+
+.fc-lesson-note {
+  padding: 14px 16px;
+  background: var(--bg-input);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.fc-lesson-note strong {
+  color: var(--accent);
+}
+
+.fc-lesson-note ol {
+  margin: 8px 0 0;
+  padding-left: 22px;
+}
+
+.fc-lesson-note li {
+  margin-bottom: 4px;
+}
